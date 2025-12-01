@@ -1,0 +1,28 @@
+<div class="invitations-container">
+  <div class="header">
+    <h1>My Invitations</h1>
+    <p>Project invitations waiting for your response</p>
+  </div>
+
+  <div class="invitations-list" *ngIf="!loading && invitations.length > 0">
+    <div class="invitation-card" *ngFor="let invitation of invitations">
+      <div class="invitation-header">
+        <h3>{{ invitation.projectName }}</h3>
+        <span class="date">{{ invitation.createdAt | date }}</span>
+      </div>
+      <p class="invited-by">Invited by: <strong>{{ invitation.invitedByName }}</strong></p>
+      <div class="actions">
+        <button class="btn-accept" (click)="acceptInvitation(invitation.id)">Accept</button>
+        <button class="btn-reject" (click)="rejectInvitation(invitation.id)">Reject</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && invitations.length === 0">
+    <p>No pending invitations</p>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Loading invitations...</p>
+  </div>
+</div>

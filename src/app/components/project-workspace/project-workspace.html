@@ -1,0 +1,31 @@
+<div class="workspace-container" *ngIf="project; else loadingOrError">
+    <div class="project-header">
+        <div class="header-content">
+            <h1>{{ project.name }}</h1>
+            <span class="status-badge" [class]="project.status.toLowerCase()">{{ project.status }}</span>
+        </div>
+        <div class="project-meta">
+            <span>Start: {{ project.startDate | date }}</span>
+            <span class="priority {{ project.priority.toLowerCase() }}">{{ project.priority }} Priority</span>
+        </div>
+    </div>
+
+    <nav class="workspace-nav">
+        <a routerLink="tasks" routerLinkActive="active">Tasks</a>
+        <a routerLink="members" routerLinkActive="active">Members</a>
+        <a routerLink="sprints" routerLinkActive="active">Sprints</a>
+    </nav>
+
+    <div class="workspace-content">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<ng-template #loadingOrError>
+    <div class="loading-state" *ngIf="loading">
+        <p>Loading project workspace...</p>
+    </div>
+    <div class="error-state" *ngIf="error">
+        <p>{{ error }}</p>
+    </div>
+</ng-template>

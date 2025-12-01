@@ -1,0 +1,6 @@
+export enum ProjectRole {
+    DEVELOPER = 'DEVELOPER',
+    SCRUM_MASTER = 'SCRUM_MASTER',
+    PROJECT_MANAGER = 'PROJECT_MANAGER',
+    TESTER = 'TESTER'
+}

@@ -1,0 +1,20 @@
+<div class="members-container">
+    <div class="header">
+        <h2>Team Members</h2>
+        <button class="btn-primary" *ngIf="isFounder" (click)="inviteMember()">+ Invite Member</button>
+    </div>
+
+    <div class="members-list" *ngIf="!loading && members.length > 0">
+        <div class="member-card" *ngFor="let member of members">
+            <div class="avatar">{{ member.userName.charAt(0) }}</div>
+            <div class="info">
+                <h3>{{ member.userName }}</h3>
+                <span class="role">{{ member.roleInProject }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && members.length === 0">
+        <p>No members yet.</p>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="tasks-container">
+    <div class="header">
+        <h2>Tasks</h2>
+        <button class="btn-primary">+ New Task</button>
+    </div>
+
+    <div class="tasks-list" *ngIf="!loading && tasks.length > 0">
+        <div class="task-card" *ngFor="let task of tasks">
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <span class="status">{{ task.status }}</span>
+        </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && tasks.length === 0">
+        <p>No tasks found.</p>
+    </div>
+</div>

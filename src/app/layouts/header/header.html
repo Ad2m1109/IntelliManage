@@ -1,0 +1,17 @@
+<header class="top-header">
+    <div class="header-left">
+        <h1>IntelliManage</h1>
+        <span class="role-badge" [class.founder]="userRole === 'FOUNDER'" [class.employee]="userRole === 'EMPLOYEE'">
+            {{ userRole === 'FOUNDER' ? '👑 Founder' : '👤 Employee' }}
+        </span>
+    </div>
+    <div class="header-center">
+        <input type="search" placeholder="Search projects, tasks..." class="search-input">
+    </div>
+    <div class="header-right">
+        <div class="user-menu">
+            <span class="user-name">{{ user?.fullName || 'User' }}</span>
+            <button class="logout-btn" (click)="logout()">Logout</button>
+        </div>
+    </div>
+</header>

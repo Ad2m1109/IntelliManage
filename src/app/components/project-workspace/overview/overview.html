@@ -1,0 +1,25 @@
+<div class="overview-container" *ngIf="project">
+    <div class="card description-card">
+        <h2>Description</h2>
+        <p>{{ project.description }}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="card stat-card">
+            <h3>Status</h3>
+            <p class="stat-value">{{ project.status }}</p>
+        </div>
+        <div class="card stat-card">
+            <h3>Priority</h3>
+            <p class="stat-value">{{ project.priority }}</p>
+        </div>
+        <div class="card stat-card">
+            <h3>Start Date</h3>
+            <p class="stat-value">{{ project.startDate | date }}</p>
+        </div>
+        <div class="card stat-card">
+            <h3>End Date</h3>
+            <p class="stat-value">{{ project.endDate ? (project.endDate | date) : 'Not set' }}</p>
+        </div>
+    </div>
+</div>

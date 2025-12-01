@@ -1,0 +1,18 @@
+<div class="sprints-container">
+    <div class="header">
+        <h2>Sprints</h2>
+        <button class="btn-primary">+ New Sprint</button>
+    </div>
+
+    <div class="sprints-list" *ngIf="!loading && sprints.length > 0">
+        <div class="sprint-card" *ngFor="let sprint of sprints">
+            <h3>{{ sprint.name }}</h3>
+            <p>{{ sprint.goal }}</p>
+            <span class="status">{{ sprint.status }}</span>
+        </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && sprints.length === 0">
+        <p>No sprints found.</p>
+    </div>
+</div>

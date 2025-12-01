@@ -1,0 +1,34 @@
+<div class="dashboard-container">
+  <div class="welcome-section">
+    <h1>Welcome back, {{ user?.fullName }}! 👋</h1>
+    <p>Here's an overview of your projects.</p>
+  </div>
+
+  <div class="projects-section">
+    <div class="section-header">
+      <h2>Your Projects</h2>
+      <button class="btn-primary" *ngIf="isFounder" routerLink="/projects/new">+ New Project</button>
+    </div>
+
+    <div class="projects-grid" *ngIf="projects.length > 0; else noProjects">
+      <div class="project-card" *ngFor="let project of projects" [routerLink]="['/projects', project.id]">
+        <div class="project-header">
+          <h3>{{ project.name }}</h3>
+          <span class="status-badge" [class]="project.status.toLowerCase()">{{ project.status }}</span>
+        </div>
+        <p class="project-desc">{{ project.description }}</p>
+        <div class="project-footer">
+          <span class="priority {{ project.priority.toLowerCase() }}">{{ project.priority }} Priority</span>
+          <span class="date">Start: {{ project.startDate | date }}</span>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noProjects>
+      <div class="empty-state">
+        <p>You haven't created any projects yet.</p>
+        <button class="btn-primary" *ngIf="isFounder" routerLink="/projects/new">Create Your First Project</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

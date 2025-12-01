@@ -1,0 +1,6 @@
+export enum AnalysisType {
+    SUMMARY = 'SUMMARY',
+    RISK = 'RISK',
+    ESTIMATION = 'ESTIMATION',
+    PRIORITY_SUGGESTION = 'PRIORITY_SUGGESTION'
+}

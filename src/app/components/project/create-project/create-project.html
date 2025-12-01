@@ -1,0 +1,58 @@
+<div class="create-project-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2>Create New Project</h2>
+            <p>Start a new journey with your team</p>
+        </div>
+
+        <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="name">Project Name</label>
+                <input type="text" id="name" formControlName="name" placeholder="e.g. Website Redesign"
+                    [class.error]="createForm.get('name')?.invalid && createForm.get('name')?.touched">
+                <div class="error-msg" *ngIf="createForm.get('name')?.invalid && createForm.get('name')?.touched">
+                    Name is required (min 3 chars)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" formControlName="description" rows="4"
+                    placeholder="What is this project about?"
+                    [class.error]="createForm.get('description')?.invalid && createForm.get('description')?.touched"></textarea>
+                <div class="error-msg"
+                    *ngIf="createForm.get('description')?.invalid && createForm.get('description')?.touched">
+                    Description is required (min 10 chars)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" formControlName="priority">
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HIGH">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" formControlName="startDate">
+                </div>
+            </div>
+
+            <div class="alert error" *ngIf="error">
+                {{ error }}
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary"
+                    (click)="router.navigate(['/founder/projects'])">Cancel</button>
+                <button type="submit" class="btn-primary" [disabled]="createForm.invalid || isLoading">
+                    {{ isLoading ? 'Creating...' : 'Create Project' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
