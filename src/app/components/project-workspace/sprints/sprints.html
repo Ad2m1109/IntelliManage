@@ -1,7 +1,7 @@
-<div class="sprints-container">
+<div class="sprints-container" [class.founder-theme]="isFounder" [class.employee-theme]="!isFounder">
     <div class="header">
         <h2>Sprints</h2>
-        <button class="btn-primary">+ New Sprint</button>
+        <button class="btn-primary" *ngIf="isFounder" (click)="createSprint()">+ New Sprint</button>
     </div>
 
     <div class="sprints-list" *ngIf="!loading && sprints.length > 0">
@@ -9,10 +9,16 @@
             <h3>{{ sprint.name }}</h3>
             <p>{{ sprint.goal }}</p>
             <span class="status">{{ sprint.status }}</span>
+            <div class="sprint-actions" *ngIf="isFounder">
+                <button *ngIf="sprint.status !== 'ACTIVE'" (click)="startSprint(sprint)">Start</button>
+                <button *ngIf="sprint.status === 'ACTIVE'" (click)="endSprint(sprint)">End</button>
+                <button (click)="deleteSprint(sprint)">Delete</button>
+            </div>
         </div>
     </div>
 
     <div class="empty-state" *ngIf="!loading && sprints.length === 0">
         <p>No sprints found.</p>
+        <button class="btn-primary" *ngIf="isFounder" (click)="createSprint()">Create First Sprint</button>
     </div>
 </div>

@@ -9,24 +9,15 @@ export interface Project {
     createdAt?: string;
 }
 
-export interface ProjectMember {
+// Project list / summary view used by list screens
+export interface ProjectSummary {
     id: number;
-    projectId: number;
-    userId: number;
-    userName: string;
-    roleInProject: string;
-    joinedAt: string;
-}
-
-export interface ProjectInvitation {
-    id: number;
-    projectId: number;
-    projectName: string;
-    invitedUserId: number;
-    invitedUserName: string;
-    invitedById: number;
-    invitedByName: string;
-    status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
-    createdAt: string;
-    respondedAt?: string;
+    name: string;
+    description?: string;
+    ownerId?: number;
+    ownerName?: string;
+    memberCount?: number;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
 }

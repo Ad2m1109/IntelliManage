@@ -1,12 +1,12 @@
 <div class="project-list">
     <div class="header">
         <h2>My Projects</h2>
-        <button class="btn-primary" [routerLink]="[roleBasePath + '/projects/new']">+ New Project</button>
+        <button class="btn-primary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">+ New Project</button>
     </div>
     
     <div *ngIf="projects.length === 0" class="empty-state">
         <p>No projects found.</p>
-        <button class="btn-secondary" [routerLink]="[roleBasePath + '/projects/new']">Create Your First Project</button>
+        <button class="btn-secondary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">Create Your First Project</button>
     </div>
     
     <div class="projects-grid" *ngIf="projects.length > 0">

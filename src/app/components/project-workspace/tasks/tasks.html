@@ -1,18 +1,33 @@
-<div class="tasks-container">
+<div class="tasks-container" [class.founder-view]="isFounder" [class.employee-view]="!isFounder" [class.founder-theme]="isFounder" [class.employee-theme]="!isFounder">
     <div class="header">
-        <h2>Tasks</h2>
-        <button class="btn-primary">+ New Task</button>
+        <div class="header-title">
+            <h2>Tasks</h2>
+            <span class="role-indicator" *ngIf="isFounder">Founder View - Full Control</span>
+            <span class="role-indicator employee" *ngIf="!isFounder">Employee View - My Tasks</span>
+        </div>
+        <button class="btn-primary" *ngIf="isFounder" (click)="createTask()">+ New Task</button>
     </div>
 
     <div class="tasks-list" *ngIf="!loading && tasks.length > 0">
         <div class="task-card" *ngFor="let task of tasks">
-            <h3>{{ task.title }}</h3>
-            <p>{{ task.description }}</p>
-            <span class="status">{{ task.status }}</span>
+            <div class="task-header">
+                <h3>{{ task.title }}</h3>
+                <span class="status-badge" [class]="task.status.toLowerCase()">{{ task.status }}</span>
+            </div>
+            <p class="task-description">{{ task.description }}</p>
+            <div class="task-footer">
+                <span class="priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
+                <div class="task-actions">
+                    <button class="btn-edit" *ngIf="isFounder" (click)="editTask(task)">Edit</button>
+                    <button class="btn-assign" *ngIf="isFounder" (click)="assignTask(task)">Assign</button>
+                    <button class="btn-status" *ngIf="!isFounder" (click)="updateStatus(task)">Update Status</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="empty-state" *ngIf="!loading && tasks.length === 0">
         <p>No tasks found.</p>
+        <button class="btn-primary" *ngIf="isFounder">Create First Task</button>
     </div>
 </div>

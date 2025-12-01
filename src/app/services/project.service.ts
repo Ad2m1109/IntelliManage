@@ -16,6 +16,16 @@ export class ProjectService {
         return this.http.get<Project[]>(this.apiUrl);
     }
 
+    // Founder-specific list (projects created by the authenticated founder)
+    getFounderProjects(): Observable<Project[]> {
+        return this.http.get<Project[]>(`${this.apiUrl}/founder`);
+    }
+
+    // Employee-specific list (projects the employee has joined)
+    getEmployeeProjects(): Observable<Project[]> {
+        return this.http.get<Project[]>(`${this.apiUrl}/employee`);
+    }
+
     getProject(id: number): Observable<Project> {
         return this.http.get<Project>(`${this.apiUrl}/${id}`);
     }

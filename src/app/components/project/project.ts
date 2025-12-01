@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class ProjectComponent implements OnInit {
   projects: any[] = [];
   roleBasePath: string = '';
+  isFounder = false;
 
   constructor(
     private projectService: ProjectService,
@@ -25,6 +26,7 @@ export class ProjectComponent implements OnInit {
     // Determine role-based path
     const userRole = this.authService.getUserRole();
     this.roleBasePath = userRole === 'FOUNDER' ? '/founder' : '/employee';
+    this.isFounder = userRole === 'FOUNDER';
 
     this.projectService.getProjects().subscribe(data => {
       this.projects = data;

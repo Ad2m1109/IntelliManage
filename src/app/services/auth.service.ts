@@ -71,6 +71,12 @@ export class AuthService {
           if (response.token && response.user) {
             localStorage.setItem(this.TOKEN_KEY, response.token);
             localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+            // Redirect based on role
+            if (response.user.roleType === 'FOUNDER') {
+              this.router.navigate(['/founder/projects']);
+            } else {
+              this.router.navigate(['/employee/projects']);
+            }
           }
         })
       );
@@ -85,6 +91,12 @@ export class AuthService {
           if (response.token && response.user) {
             localStorage.setItem(this.TOKEN_KEY, response.token);
             localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+            // Redirect to role-specific default route
+            if (response.user.roleType === 'FOUNDER') {
+              this.router.navigate(['/founder/projects']);
+            } else {
+              this.router.navigate(['/employee/projects']);
+            }
           }
         })
       );

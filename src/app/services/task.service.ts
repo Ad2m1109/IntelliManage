@@ -17,6 +17,11 @@ export class TaskService {
         return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks`);
     }
 
+    // Return tasks assigned to the authenticated user within a project
+    getMyTasks(projectId: number): Observable<Task[]> {
+        return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks/me`);
+    }
+
     createTask(projectId: number, task: Partial<Task>): Observable<Task> {
         return this.http.post<Task>(`${this.apiUrl}/projects/${projectId}/tasks`, task);
     }

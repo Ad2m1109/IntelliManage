@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { ProjectInvitation } from '../models/project.model';
+import { ProjectInvitation } from '../models/invitation.model';
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +16,14 @@ export class InvitationService {
         return this.http.post<ProjectInvitation>(
             `${this.apiUrl}/projects/${projectId}/invitations`,
             { userId }
+        );
+    }
+
+    // Send an invitation using an email address (Founder flow)
+    sendInvitationByEmail(projectId: number, email: string): Observable<ProjectInvitation> {
+        return this.http.post<ProjectInvitation>(
+            `${this.apiUrl}/projects/${projectId}/invitations/email`,
+            { email }
         );
     }
 

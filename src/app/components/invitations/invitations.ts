@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { InvitationService } from '../../services/invitation.service';
-import { ProjectInvitation } from '../../models/project.model';
+import { ProjectInvitation } from '../../models/invitation.model';
 
 @Component({
     selector: 'app-invitations',

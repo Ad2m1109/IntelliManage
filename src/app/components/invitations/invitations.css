@@ -1,103 +1,171 @@
 .invitations-container {
-  padding: 2rem;
+  padding: 24px;
   max-width: 900px;
   margin: 0 auto;
+  /* Employee-specific green theme */
+  --employee-color: #11998e;
+  --employee-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 }
 
 .header {
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 3px solid #d4f4f1;
 }
 
 .header h1 {
-  font-size: 2rem;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header h1::before {
+  content: "✉️";
+  font-size: 32px;
+}
+
+.header p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+  padding-left: 44px;
 }
 
 .invitations-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 20px;
 }
 
 .invitation-card {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  border: 1px solid #eee;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid var(--employee-color);
+  transition: all 0.3s ease;
+}
+
+.invitation-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 6px 20px rgba(17, 153, 142, 0.2);
 }
 
 .invitation-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 }
 
 .invitation-header h3 {
   margin: 0;
-  color: #2c3e50;
-  font-size: 1.25rem;
+  color: #333;
+  font-size: 20px;
 }
 
 .date {
   color: #888;
-  font-size: 0.9rem;
+  font-size: 13px;
+  background: #f0f0f0;
+  padding: 4px 10px;
+  border-radius: 12px;
 }
 
 .invited-by {
   color: #666;
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.invited-by strong {
+  color: var(--employee-color);
+  font-weight: 600;
 }
 
 .actions {
   display: flex;
-  gap: 1rem;
+  gap: 12px;
 }
 
 button {
-  padding: 0.75rem 1.5rem;
+  padding: 10px 24px;
   border: none;
   border-radius: 8px;
   font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-accept {
-  background: #388e3c;
+  background: var(--employee-gradient);
   color: white;
+  flex: 1;
 }
 
 .btn-accept:hover {
-  background: #2e7d32;
+  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+  transform: translateY(-2px);
 }
 
 .btn-reject {
+  background: #f5f5f5;
+  color: #d32f2f;
+  border: 2px solid #d32f2f;
+}
+
+.btn-reject:hover {
   background: #d32f2f;
   color: white;
 }
 
-.btn-reject:hover {
-  background: #c62828;
-}
-
 .empty-state {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 60px 20px;
   background: #f8f9fa;
   border-radius: 12px;
-  border: 2px dashed #dee2e6;
+  border: 2px dashed var(--employee-color);
 }
 
 .empty-state p {
   color: #6c757d;
-  font-size: 1.1rem;
+  font-size: 16px;
+  margin: 0;
+}
+
+.empty-state::before {
+  content: "📭";
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
 }
 
 .loading {
   text-align: center;
-  padding: 2rem;
+  padding: 40px;
   color: #6c757d;
+}
+
+.loading::before {
+  content: "⏳";
+  font-size: 32px;
+  display: block;
+  margin-bottom: 12px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
