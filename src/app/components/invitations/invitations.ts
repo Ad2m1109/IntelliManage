@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { InvitationService } from '../../services/invitation.service';
 import { ProjectInvitation } from '../../models/invitation.model';
+import { HasRoleDirective } from '../../directives/has-role.directive';
 
 @Component({
     selector: 'app-invitations',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, HasRoleDirective],
     templateUrl: './invitations.html',
     styleUrl: './invitations.css'
 })

@@ -4,11 +4,15 @@ import { ProjectStateService } from '../../../services/project-state.service';
 import { TaskService } from '../../../services/task.service';
 import { AuthService } from '../../../services/auth.service';
 import { Task } from '../../../models/task.model';
+import { TaskFormComponent } from './task-form/task-form.component';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, DragDropModule } from '@angular/cdk/drag-drop';
+import { TaskStatus } from '../../../models/task-status.enum';
+import { HasRoleDirective } from '../../../directives/has-role.directive';
 
 @Component({
     selector: 'app-project-tasks',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, TaskFormComponent, DragDropModule, HasRoleDirective],
     templateUrl: './tasks.html',
     styleUrl: './tasks.css'
 })
@@ -18,6 +22,18 @@ export class ProjectTasksComponent implements OnInit {
     userRole: string = '';
     isFounder: boolean = false;
     selectedProjectId?: number;
+
+    // State for the task form
+    showTaskForm: boolean = false;
+    taskToEdit: Task | null = null;
+
+    // Kanban specific properties
+    kanbanColumns: { [key: string]: Task[] } = {
+        [TaskStatus.PLANNED]: [],
+        [TaskStatus.IN_PROGRESS]: [],
+        [TaskStatus.COMPLETED]: []
+    };
+    taskStatuses = Object.values(TaskStatus); // For iterating over columns
 
     constructor(
         private projectState: ProjectStateService,
@@ -46,6 +62,7 @@ export class ProjectTasksComponent implements OnInit {
         obs.subscribe({
             next: (data) => {
                 this.tasks = data;
+                this.groupTasksIntoKanbanColumns(data);
                 this.loading = false;
             },
             error: (err) => {
@@ -55,44 +72,109 @@ export class ProjectTasksComponent implements OnInit {
         });
     }
 
+    private groupTasksIntoKanbanColumns(tasks: Task[]): void {
+        this.kanbanColumns = {
+            [TaskStatus.PLANNED]: [],
+            [TaskStatus.IN_PROGRESS]: [],
+            [TaskStatus.COMPLETED]: []
+        };
+        tasks.forEach(task => {
+            if (task.status && this.kanbanColumns[task.status]) {
+                this.kanbanColumns[task.status].push(task);
+            }
+        });
+    }
+
     createTask() {
         if (!this.isFounder || !this.selectedProjectId) return;
-        const title = window.prompt('Task title');
-        if (!title) return;
-        const task: Partial<Task> = { title, status: 'TODO' as any, priority: 'MEDIUM' };
-        this.taskService.createTask(this.selectedProjectId, task).subscribe({
-            next: () => this.loadTasks(this.selectedProjectId!),
-            error: (err) => console.error('Error creating task', err)
-        });
+        this.showTaskForm = true;
+        this.taskToEdit = null;
     }
 
     editTask(task: Task) {
         if (!this.isFounder) return;
-        const title = window.prompt('Edit title', task.title);
-        if (title === null) return;
-        this.taskService.updateTask(task.id!, { title }).subscribe({
-            next: () => this.loadTasks(this.selectedProjectId!),
-            error: (err) => console.error('Error updating task', err)
-        });
+        this.showTaskForm = true;
+        this.taskToEdit = task;
     }
 
     assignTask(task: Task) {
         if (!this.isFounder) return;
-        const userIdStr = window.prompt('Assign to userId');
-        const userId = userIdStr ? Number(userIdStr) : null;
-        if (!userId) return;
-        this.taskService.updateTask(task.id!, { assignee: { id: userId } as any }).subscribe({
-            next: () => this.loadTasks(this.selectedProjectId!),
-            error: (err) => console.error('Error assigning task', err)
-        });
+        this.showTaskForm = true;
+        this.taskToEdit = task; // Pre-fill the form with the task to assign
     }
 
+    // This method will be used by the Kanban board for employees
     updateStatus(task: Task) {
         const nextStatus = window.prompt('New status', task.status as any);
         if (!nextStatus) return;
-        this.taskService.updateTask(task.id!, { status: nextStatus as any }).subscribe({
-            next: () => this.loadTasks(this.selectedProjectId!),
-            error: (err) => console.error('Error updating status', err)
+        this.updateTaskStatusBackend(task.id!, nextStatus as TaskStatus);
+    }
+
+    drop(event: CdkDragDrop<Task[]>) {
+        if (!this.selectedProjectId) return;
+
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            const task = event.previousContainer.data[event.previousIndex];
+            const newStatus = event.container.id as TaskStatus; // The ID of the cdkDropList is the status
+
+            // Update backend
+            this.updateTaskStatusBackend(task.id!, newStatus, () => {
+                // On success, update frontend
+                transferArrayItem(
+                    event.previousContainer.data,
+                    event.container.data,
+                    event.previousIndex,
+                    event.currentIndex
+                );
+                task.status = newStatus; // Update task object's status
+            });
+        }
+    }
+
+    private updateTaskStatusBackend(taskId: number, status: TaskStatus, successCallback?: () => void): void {
+        if (!this.selectedProjectId) return;
+        this.taskService.updateTask(taskId, { status: status }).subscribe({
+            next: () => {
+                console.log(`Task ${taskId} status updated to ${status}`);
+                if (successCallback) {
+                    successCallback();
+                }
+            },
+            error: (err) => {
+                console.error('Error updating task status', err);
+                // Optionally revert UI changes if backend update fails
+                this.loadTasks(this.selectedProjectId!); // Reload tasks to revert UI
+            }
         });
+    }
+
+    handleTaskSubmitted(taskData: Partial<Task>) {
+        if (!this.selectedProjectId) return;
+
+        if (taskData.id) {
+            // Update existing task
+            this.taskService.updateTask(taskData.id, taskData).subscribe({
+                next: () => {
+                    this.showTaskForm = false;
+                    this.loadTasks(this.selectedProjectId!);
+                },
+                error: (err) => console.error('Error updating task', err)
+            });
+        } else {
+            // Create new task
+            this.taskService.createTask(this.selectedProjectId, taskData).subscribe({
+                next: () => {
+                    this.showTaskForm = false;
+                    this.loadTasks(this.selectedProjectId!);
+                },
+                error: (err) => console.error('Error creating task', err)
+            });
+        }
+    }
+
+    handleCancel() {
+        this.showTaskForm = false;
     }
 }

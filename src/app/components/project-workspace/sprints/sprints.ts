@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ProjectStateService } from '../../../services/project-state.service';
 import { SprintService, Sprint } from '../../../services/sprint.service';
 import { AuthService } from '../../../services/auth.service';
+import { HasRoleDirective } from '../../../directives/has-role.directive';
 
 @Component({
     selector: 'app-project-sprints',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, HasRoleDirective],
     templateUrl: './sprints.html',
     styleUrl: './sprints.css'
 })

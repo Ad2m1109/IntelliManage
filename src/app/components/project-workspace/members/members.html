@@ -6,13 +6,13 @@
 
     <div class="members-list" *ngIf="!loading && members.length > 0">
         <div class="member-card" *ngFor="let member of members">
-            <div class="avatar">{{ (member.user?.fullName || 'U').charAt(0) }}</div>
+            <div class="avatar">{{ (member.userName || 'U').charAt(0) }}</div>
             <div class="info">
-                <h3>{{ member.user?.fullName || 'Unknown' }}</h3>
-                <span class="role">{{ member.roleInProject || member.user?.roleType }}</span>
+                <h3>{{ member.userName || 'Unknown' }}</h3>
+                <span class="role">{{ member.roleInProject }}</span>
             </div>
             <div class="member-actions">
-                <button class="btn-remove" *ngIf="isFounder" (click)="removeMember(member.user?.id || member.id?.userId)">Remove</button>
+                <button class="btn-remove" *ngIf="isFounder" (click)="removeMember(member.userId)">Remove</button>
             </div>
         </div>
     </div>

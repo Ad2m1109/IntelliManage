@@ -1,0 +1,59 @@
+<div class="task-form-container">
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <h3>{{ task ? 'Edit Task' : 'Create New Task' }}</h3>
+
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" type="text" formControlName="title" />
+      <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched" class="error-message">
+        Title is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" formControlName="status">
+          <option *ngFor="let status of taskStatuses" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="priority">Priority</label>
+        <select id="priority" formControlName="priority">
+          <option *ngFor="let priority of priorities" [value]="priority">{{ priority }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="assignee">Assignee</label>
+        <select id="assignee" formControlName="assigneeId">
+          <option [value]="null">Unassigned</option>
+          <option *ngFor="let member of members" [value]="member.id">{{ member.fullName }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sprint">Sprint</label>
+        <select id="sprint" formControlName="sprintId">
+          <option [value]="null">No Sprint</option>
+          <option *ngFor="let sprint of sprints" [value]="sprint.id">{{ sprint.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="btn-primary" [disabled]="taskForm.invalid">
+        {{ task ? 'Update Task' : 'Create Task' }}
+      </button>
+    </div>
+  </form>
+</div>
