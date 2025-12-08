@@ -1,16 +1,17 @@
-<div class="tasks-container" [class.founder-view]="isFounder" [class.employee-view]="!isFounder" [class.founder-theme]="isFounder" [class.employee-theme]="!isFounder">
+<div class="tasks-container" [class.founder-view]="isFounder" [class.employee-view]="!isFounder"
+    [class.founder-theme]="isFounder" [class.employee-theme]="!isFounder">
     <div class="header">
         <div class="header-title">
             <h2>Tasks</h2>
-            <span class="role-indicator" *ngIf="isFounder">Founder View - Full Control</span>
-            <span class="role-indicator employee" *ngIf="!isFounder">Employee View - My Tasks</span>
+            <span class="role-indicator" *appHasRole="'FOUNDER'">Founder View - Full Control</span>
+            <span class="role-indicator employee" *appHasRole="'EMPLOYEE'">Employee View - My Tasks</span>
         </div>
         <button class="btn-primary" *ngIf="isFounder && !showTaskForm" (click)="createTask()">+ New Task</button>
     </div>
 
     <div *ngIf="!showTaskForm">
         <!-- Founder View: List Layout -->
-        <div *ngIf="isFounder">
+        <div *appHasRole="'FOUNDER'">
             <div class="tasks-list" *ngIf="!loading && tasks.length > 0">
                 <div class="task-card" *ngFor="let task of tasks">
                     <div class="task-header">
@@ -35,7 +36,7 @@
         </div>
 
         <!-- Employee View: Kanban Board -->
-        <div *ngIf="!isFounder" class="kanban-board">
+        <div *appHasRole="'EMPLOYEE'" class="kanban-board">
             <div *ngFor="let status of taskStatuses" class="kanban-column" [id]="status" cdkDropList
                 [cdkDropListData]="kanbanColumns[status]" (cdkDropListDropped)="drop($event)">
                 <div class="kanban-column-header">
@@ -67,10 +68,7 @@
         </div>
     </div>
 
-    <app-task-form
-        *ngIf="showTaskForm"
-        [task]="taskToEdit"
-        (taskSubmitted)="handleTaskSubmitted($event)"
+    <app-task-form *ngIf="showTaskForm" [task]="taskToEdit" (taskSubmitted)="handleTaskSubmitted($event)"
         (cancel)="handleCancel()">
     </app-task-form>
 </div>

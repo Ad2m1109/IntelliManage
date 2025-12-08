@@ -32,7 +32,7 @@ export class AiAnalystComponent {
 
     this.aiService.generateContent(userMessage).subscribe({
       next: (response) => {
-        const aiText = response.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI.';
+        const aiText = response.response || 'No response from AI.';
         this.messages.push({ text: aiText, sender: 'ai' });
         this.loading = false;
       },
