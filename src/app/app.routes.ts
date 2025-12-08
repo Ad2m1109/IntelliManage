@@ -17,6 +17,7 @@ import { ProjectWorkspaceComponent } from './components/project-workspace/projec
 import { ProjectTasksComponent } from './components/project-workspace/tasks/tasks';
 import { ProjectMembersComponent } from './components/project-workspace/members/members';
 import { ProjectSprintsComponent } from './components/project-workspace/sprints/sprints';
+import { AiAnalystComponent } from './components/ai-analyst/ai-analyst';
 
 // Error Components
 import { NotFoundComponent } from './components/error/not-found/not-found';
@@ -51,6 +52,7 @@ export const routes: Routes = [
                     { path: 'tasks', component: ProjectTasksComponent },
                     { path: 'members', component: ProjectMembersComponent },
                     { path: 'sprints', component: ProjectSprintsComponent },
+                    { path: 'ai-analyst', component: AiAnalystComponent },
                 ]
             },
         ]
@@ -74,6 +76,7 @@ export const routes: Routes = [
                     { path: 'tasks', component: ProjectTasksComponent },
                     { path: 'members', component: ProjectMembersComponent },
                     { path: 'sprints', component: ProjectSprintsComponent },
+                    { path: 'ai-analyst', component: AiAnalystComponent },
                 ]
             },
         ]

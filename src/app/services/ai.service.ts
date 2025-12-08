@@ -1,28 +1,34 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-
-export interface AiAnalysis {
-    id: number;
-    analysisType: string;
-    result: string;
-    createdAt: string;
-}
 
 @Injectable({
     providedIn: 'root'
 })
 export class AiService {
-    private apiUrl = `${environment.apiUrl}`;
+    private apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+    private apiKey = 'AIzaSyC0HwIBDVbZqndhSZ4Au80aLpMAI6ooTl0'; // Ideally, this should be in environment variables
 
     constructor(private http: HttpClient) { }
 
-    getProjectAnalysis(projectId: number): Observable<AiAnalysis[]> {
-        return this.http.get<AiAnalysis[]>(`${this.apiUrl}/projects/${projectId}/ai-analysis`);
-    }
+    generateContent(prompt: string): Observable<any> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'X-goog-api-key': this.apiKey
+        });
 
-    generateAnalysis(projectId: number, type: string): Observable<AiAnalysis> {
-        return this.http.post<AiAnalysis>(`${this.apiUrl}/projects/${projectId}/ai-analysis`, { type });
+        const body = {
+            contents: [
+                {
+                    parts: [
+                        {
+                            text: prompt
+                        }
+                    ]
+                }
+            ]
+        };
+
+        return this.http.post(this.apiUrl, body, { headers });
     }
 }

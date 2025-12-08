@@ -1,0 +1,25 @@
+<div class="ai-analyst-container">
+    <div class="chat-header">
+        <h2>AI Project Analyst</h2>
+        <p>Ask me anything about project management or general questions.</p>
+    </div>
+
+    <div class="chat-messages">
+        <div class="message" *ngFor="let msg of messages"
+            [ngClass]="{'user-message': msg.sender === 'user', 'ai-message': msg.sender === 'ai'}">
+            <div class="message-content">
+                <span class="sender-name">{{ msg.sender === 'user' ? 'You' : 'AI Analyst' }}</span>
+                <p>{{ msg.text }}</p>
+            </div>
+        </div>
+        <div class="loading-indicator" *ngIf="loading">
+            <span>AI is thinking...</span>
+        </div>
+    </div>
+
+    <div class="chat-input-area">
+        <input type="text" [(ngModel)]="userInput" (keyup.enter)="sendMessage()"
+            placeholder="Type your question here..." [disabled]="loading">
+        <button (click)="sendMessage()" [disabled]="loading || !userInput.trim()">Send</button>
+    </div>
+</div>
