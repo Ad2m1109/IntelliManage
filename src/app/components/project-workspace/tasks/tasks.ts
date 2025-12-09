@@ -7,12 +7,11 @@ import { Task } from '../../../models/task.model';
 import { TaskFormComponent } from './task-form/task-form.component';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, DragDropModule } from '@angular/cdk/drag-drop';
 import { TaskStatus } from '../../../models/task-status.enum';
-import { HasRoleDirective } from '../../../directives/has-role.directive';
 
 @Component({
     selector: 'app-project-tasks',
     standalone: true,
-    imports: [CommonModule, TaskFormComponent, DragDropModule, HasRoleDirective],
+    imports: [CommonModule, TaskFormComponent, DragDropModule],
     templateUrl: './tasks.html',
     styleUrl: './tasks.css'
 })

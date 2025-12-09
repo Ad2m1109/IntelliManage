@@ -1,4 +1,4 @@
-<div class="sprints-container" [class.founder-theme]="isFounder" [class.employee-theme]="!isFounder">
+<div class="sprints-container">
     <div class="header">
         <h2>Sprints</h2>
         <button class="btn-primary" *appHasRole="'FOUNDER'" (click)="createSprint()">+ New Sprint</button>

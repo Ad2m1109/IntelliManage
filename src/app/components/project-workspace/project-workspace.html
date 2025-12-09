@@ -24,6 +24,7 @@
 
 <ng-template #loadingOrError>
     <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
         <p>Loading project workspace...</p>
     </div>
     <div class="error-state" *ngIf="error">

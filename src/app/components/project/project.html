@@ -1,197 +1,29 @@
-<div class="project-list">
+<div class="project-list-container">
     <div class="header">
         <h2>My Projects</h2>
         <button class="btn-primary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">+ New Project</button>
     </div>
     
-    <div *ngIf="projects.length === 0" class="empty-state">
+    <div *ngIf="isLoading" class="loading-state">
+        <p>Loading projects...</p>
+    </div>
+
+    <div *ngIf="!isLoading && projects.length === 0" class="empty-state">
         <p>No projects found.</p>
         <button class="btn-secondary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">Create Your First Project</button>
     </div>
     
-    <div class="projects-grid" *ngIf="projects.length > 0">
+    <div class="projects-grid" *ngIf="!isLoading && projects.length > 0">
         <div class="project-card" *ngFor="let project of projects" (click)="navigateToProject(project.id)">
             <div class="card-header">
                 <h3>{{ project.name }}</h3>
-                <span class="status-badge" [class]="project.status?.toLowerCase()">{{ project.status }}</span>
+                <span class="status-badge" [class]="project.status.toLowerCase()">{{ project.status }}</span>
             </div>
             <p class="description">{{ project.description }}</p>
             <div class="card-footer">
-                <span class="priority" [class]="project.priority?.toLowerCase()">{{ project.priority }} Priority</span>
+                <span class="priority" [class]="project.priority.toLowerCase()">{{ project.priority }} Priority</span>
                 <span class="date">{{ project.startDate | date:'shortDate' }}</span>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .project-list {
-        padding: 30px;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .header h2 {
-        margin: 0;
-        font-size: 28px;
-        color: #333;
-    }
-
-    .btn-primary {
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: background 0.2s;
-    }
-
-    .btn-primary:hover {
-        background: #0056b3;
-    }
-
-    .btn-secondary {
-        background: #6c757d;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: background 0.2s;
-    }
-
-    .btn-secondary:hover {
-        background: #5a6268;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        background: #f8f9fa;
-        border-radius: 8px;
-    }
-
-    .empty-state p {
-        color: #6c757d;
-        font-size: 16px;
-        margin-bottom: 20px;
-    }
-
-    .projects-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 20px;
-    }
-
-    .project-card {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 20px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .project-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        border-color: #007bff;
-    }
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: start;
-        margin-bottom: 12px;
-    }
-
-    .card-header h3 {
-        margin: 0;
-        font-size: 18px;
-        color: #333;
-        flex: 1;
-    }
-
-    .status-badge {
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 500;
-        text-transform: uppercase;
-        margin-left: 10px;
-    }
-
-    .status-badge.active {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .status-badge.completed {
-        background: #cce5ff;
-        color: #004085;
-    }
-
-    .status-badge.on_hold {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .description {
-        color: #6c757d;
-        font-size: 14px;
-        line-height: 1.5;
-        margin-bottom: 16px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 12px;
-        border-top: 1px solid #f0f0f0;
-    }
-
-    .priority {
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .priority.high {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    .priority.medium {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .priority.low {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-
-    .date {
-        color: #6c757d;
-        font-size: 13px;
-    }
-</style>

@@ -4,9 +4,9 @@
     justify-content: space-between;
     padding: 0 24px;
     height: 64px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .header-left {
@@ -19,28 +19,18 @@
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: #1976d2;
+    color: var(--text-primary-color);
 }
 
 .role-badge {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-.role-badge.founder {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--primary-color);
     color: white;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-}
-
-.role-badge.employee {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-    color: white;
-    box-shadow: 0 2px 8px rgba(17, 153, 142, 0.3);
 }
 
 .header-center {
@@ -51,22 +41,23 @@
 
 .search-input {
     width: 100%;
-    padding: 8px 16px;
-    border: 1px solid #e0e0e0;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-input:focus {
-    border-color: #1976d2;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
 }
 
 .header-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
 }
 
 .user-menu {
@@ -76,21 +67,24 @@
 }
 
 .user-name {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
-    color: #333;
+    color: var(--text-primary-color);
 }
 
 .logout-btn {
-    padding: 6px 16px;
-    background-color: #f5f5f5;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
+    padding: 8px 16px;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary-color);
+    border-radius: 6px;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .logout-btn:hover {
-    background-color: #e0e0e0;
+    background-color: var(--background-color);
+    color: var(--text-primary-color);
 }

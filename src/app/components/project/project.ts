@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
+import { Project } from '../../models/project.model';
 
 @Component({
   selector: 'app-project',
@@ -12,9 +13,10 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './project.css',
 })
 export class ProjectComponent implements OnInit {
-  projects: any[] = [];
+  projects: Project[] = [];
   roleBasePath: string = '';
   isFounder = false;
+  isLoading = false;
 
   constructor(
     private projectService: ProjectService,
@@ -23,13 +25,20 @@ export class ProjectComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Determine role-based path
+    this.isLoading = true;
     const userRole = this.authService.getUserRole();
     this.roleBasePath = userRole === 'FOUNDER' ? '/founder' : '/employee';
     this.isFounder = userRole === 'FOUNDER';
 
-    this.projectService.getProjects().subscribe(data => {
-      this.projects = data;
+    this.projectService.getProjects().subscribe({
+      next: (data) => {
+        this.projects = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load projects', err);
+        this.isLoading = false;
+      }
     });
   }
 

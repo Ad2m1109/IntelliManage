@@ -1,17 +1,12 @@
-<div class="tasks-container" [class.founder-view]="isFounder" [class.employee-view]="!isFounder"
-    [class.founder-theme]="isFounder" [class.employee-theme]="!isFounder">
+<div class="tasks-container">
     <div class="header">
-        <div class="header-title">
-            <h2>Tasks</h2>
-            <span class="role-indicator" *appHasRole="'FOUNDER'">Founder View - Full Control</span>
-            <span class="role-indicator employee" *appHasRole="'EMPLOYEE'">Employee View - My Tasks</span>
-        </div>
+        <h2>Tasks</h2>
         <button class="btn-primary" *ngIf="isFounder && !showTaskForm" (click)="createTask()">+ New Task</button>
     </div>
 
     <div *ngIf="!showTaskForm">
         <!-- Founder View: List Layout -->
-        <div *appHasRole="'FOUNDER'">
+        <div *ngIf="isFounder">
             <div class="tasks-list" *ngIf="!loading && tasks.length > 0">
                 <div class="task-card" *ngFor="let task of tasks">
                     <div class="task-header">
@@ -28,47 +23,38 @@
                     </div>
                 </div>
             </div>
-
             <div class="empty-state" *ngIf="!loading && tasks.length === 0">
-                <p>No tasks found.</p>
+                <p>No tasks found for this project.</p>
                 <button class="btn-primary" (click)="createTask()">Create First Task</button>
             </div>
         </div>
 
         <!-- Employee View: Kanban Board -->
-        <div *appHasRole="'EMPLOYEE'" class="kanban-board">
-            <div *ngFor="let status of taskStatuses" class="kanban-column" [id]="status" cdkDropList
-                [cdkDropListData]="kanbanColumns[status]" (cdkDropListDropped)="drop($event)">
+        <div *ngIf="!isFounder" class="kanban-board" cdkDropListGroup>
+            <div *ngFor="let status of taskStatuses" class="kanban-column">
                 <div class="kanban-column-header">
-                    <h3>{{ status | titlecase }}</h3>
+                    <h3>{{ status.replace('_', ' ') }}</h3>
                     <span>{{ kanbanColumns[status].length }}</span>
                 </div>
-                <div class="task-card kanban-card" *ngFor="let task of kanbanColumns[status]" cdkDrag>
-                    <div class="task-header">
-                        <h3>{{ task.title }}</h3>
-                        <span class="status-badge" [class]="task.status.toLowerCase()">{{ task.status }}</span>
-                    </div>
-                    <p class="task-description">{{ task.description }}</p>
-                    <div class="task-footer">
-                        <span class="priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
-                        <div class="task-actions">
-                            <!-- Employee can only update status via drag-and-drop -->
+                <div class="kanban-tasks" [id]="status" cdkDropList [cdkDropListData]="kanbanColumns[status]" (cdkDropListDropped)="drop($event)">
+                    <div class="task-card kanban-card" *ngFor="let task of kanbanColumns[status]" cdkDrag>
+                        <div class="task-header">
+                            <h3>{{ task.title }}</h3>
                         </div>
+                        <p class="task-description">{{ task.description }}</p>
+                        <div class="task-footer">
+                            <span class="priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
+                        </div>
+                        <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
                     </div>
-                    <div *cdkDragPlaceholder class="drag-placeholder"></div>
-                </div>
-                <div class="empty-column-message" *ngIf="kanbanColumns[status].length === 0">
-                    No tasks in this column.
+                    <div class="empty-column-message" *ngIf="kanbanColumns[status].length === 0">
+                        No tasks here.
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="empty-state" *ngIf="!loading && tasks.length === 0 && !isFounder">
-            <p>No tasks found.</p>
-        </div>
     </div>
 
-    <app-task-form *ngIf="showTaskForm" [task]="taskToEdit" (taskSubmitted)="handleTaskSubmitted($event)"
-        (cancel)="handleCancel()">
+    <app-task-form *ngIf="showTaskForm" [task]="taskToEdit" (taskSubmitted)="handleTaskSubmitted($event)" (cancel)="handleCancel()">
     </app-task-form>
 </div>

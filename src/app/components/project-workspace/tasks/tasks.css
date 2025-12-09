@@ -1,18 +1,5 @@
 .tasks-container {
-    padding: 24px;
-}
-
-/* Role-based container styling */
-.tasks-container.founder-view {
-    --role-color: #667eea;
-    --role-color-light: #e3e8ff;
-    --role-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.tasks-container.employee-view {
-    --role-color: #11998e;
-    --role-color-light: #d4f4f1;
-    --role-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    padding: 0 24px 24px 24px;
 }
 
 .header {
@@ -21,110 +8,64 @@
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 2px solid var(--role-color-light, #f0f0f0);
+    border-bottom: 1px solid var(--border-color);
 }
 
-.header-title {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.header-title h2 {
+.header h2 {
     margin: 0;
-    font-size: 24px;
-    color: #333;
+    font-size: 22px;
+    color: var(--text-primary-color);
 }
 
-.role-indicator {
-    font-size: 13px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 20px;
-    background: var(--role-gradient);
+.btn-primary {
+    background-color: var(--primary-color);
     color: white;
-    display: inline-block;
-    width: fit-content;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
 }
 
-.tasks-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 20px;
+.btn-primary:hover {
+    background-color: var(--primary-hover-color);
 }
 
+/* Generic Task Card Style */
 .task-card {
-    background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px;
-    transition: all 0.3s ease;
-}
-
-.founder-view .task-card {
-    border-left: 4px solid #667eea;
-}
-
-.employee-view .task-card {
-    border-left: 44px solid #11998e;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
 
 .task-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.founder-view .task-card:hover {
-    border-color: #667eea;
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
-}
-
-.employee-view .task-card:hover {
-    border-color: #11998e;
-    box-shadow: 0 8px 20px rgba(17, 153, 142, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .task-header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
-    margin-bottom: 12px;
+    align-items: flex-start;
+    margin-bottom: 8px;
 }
 
 .task-header h3 {
     margin: 0;
-    font-size: 18px;
-    color: #333;
+    font-size: 16px;
+    color: var(--text-primary-color);
     flex: 1;
 }
 
-.status-badge {
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.status-badge.todo {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status-badge.in_progress {
-    background: #cce5ff;
-    color: #004085;
-}
-
-.status-badge.done {
-    background: #d4edda;
-    color: #155724;
-}
-
 .task-description {
-    color: #666;
+    color: var(--text-secondary-color);
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.5;
     margin-bottom: 16px;
 }
 
@@ -133,142 +74,118 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 12px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--border-color);
+    font-size: 13px;
 }
+
+/* Badges */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.status-badge.planned { background: #e3f2fd; color: #4a90e2; }
+.status-badge.in_progress { background: #fff8e1; color: var(--warning-color); }
+.status-badge.completed { background: #e8f5e9; color: var(--success-color); }
 
 .priority {
     padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 11px;
+}
+.priority.high { background: #fdeaea; color: var(--error-color); }
+.priority.medium { background: #fff8e1; color: var(--warning-color); }
+.priority.low { background: #e8f5e9; color: var(--success-color); }
+
+
+/* Founder List View */
+.tasks-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
 }
 
-.priority.high {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.priority.medium {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.priority.low {
-    background: #d1ecf1;
-    color: #0c5460;
-}
-
-.task-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-edit,
-.btn-status {
-    padding: 6px 14px;
-    border: none;
+.task-actions .btn-edit, .task-actions .btn-assign {
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
+    background-color: var(--surface-color);
+    color: var(--text-secondary-color);
     transition: all 0.2s;
 }
 
-.founder-view .btn-edit {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+.task-actions .btn-edit:hover, .task-actions .btn-assign:hover {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
-.founder-view .btn-edit:hover {
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    transform: translateY(-1px);
-}
 
-.employee-view .btn-status {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-    color: white;
-}
-
-.employee-view .btn-status:hover {
-    box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
-    transform: translateY(-1px);
-}
-
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border: 2px dashed var(--role-color, #ddd);
-}
-
-.empty-state p {
-    color: #6c757d;
-    font-size: 16px;
-    margin-bottom: 20px;
-}
-
-/* Kanban Board Styles */
+/* Employee Kanban Board View */
 .kanban-board {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    padding: 10px;
-    background-color: #f0f2f5;
-    border-radius: 8px;
+    min-height: calc(100vh - 250px); /* Ensure columns have height */
 }
 
 .kanban-column {
-    background-color: #e8ebee;
+    background-color: #f0f2f5;
     border-radius: 8px;
     padding: 15px;
-    min-height: 300px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .kanban-column-header {
+    padding: 0 8px 15px 8px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #d0d4d9;
 }
 
 .kanban-column-header h3 {
     margin: 0;
-    font-size: 18px;
-    color: #333;
+    font-size: 16px;
+    color: var(--text-primary-color);
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .kanban-column-header span {
-    background-color: #c0c4c9;
-    color: white;
-    padding: 4px 8px;
+    background-color: var(--border-color);
+    color: var(--text-secondary-color);
+    padding: 2px 8px;
     border-radius: 12px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.kanban-tasks {
+    flex-grow: 1;
+    min-height: 100px;
 }
 
 .kanban-card {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     cursor: grab;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-}
-
-.kanban-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
 }
 
 .cdk-drag-placeholder {
-    background: #ccc;
-    border: dotted 3px #999;
-    min-height: 60px;
+    background: #eaf2fd;
+    border: 2px dashed var(--primary-color);
+    min-height: 80px;
+    border-radius: 8px;
+    margin-bottom: 12px;
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
@@ -280,9 +197,16 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.empty-column-message {
-    color: #888;
+.empty-state, .empty-column-message {
+    color: var(--text-secondary-color);
     text-align: center;
     padding: 20px;
     font-style: italic;
+}
+
+.empty-state {
+    margin-top: 24px;
+    background: var(--surface-color);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
 }
