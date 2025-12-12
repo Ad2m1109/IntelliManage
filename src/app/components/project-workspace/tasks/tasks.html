@@ -5,32 +5,8 @@
     </div>
 
     <div *ngIf="!showTaskForm">
-        <!-- Founder View: List Layout -->
-        <div *ngIf="isFounder">
-            <div class="tasks-list" *ngIf="!loading && tasks.length > 0">
-                <div class="task-card" *ngFor="let task of tasks">
-                    <div class="task-header">
-                        <h3>{{ task.title }}</h3>
-                        <span class="status-badge" [class]="task.status.toLowerCase()">{{ task.status }}</span>
-                    </div>
-                    <p class="task-description">{{ task.description }}</p>
-                    <div class="task-footer">
-                        <span class="priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
-                        <div class="task-actions">
-                            <button class="btn-edit" (click)="editTask(task)">Edit</button>
-                            <button class="btn-assign" (click)="assignTask(task)">Assign</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="empty-state" *ngIf="!loading && tasks.length === 0">
-                <p>No tasks found for this project.</p>
-                <button class="btn-primary" (click)="createTask()">Create First Task</button>
-            </div>
-        </div>
-
-        <!-- Employee View: Kanban Board -->
-        <div *ngIf="!isFounder" class="kanban-board" cdkDropListGroup>
+        <!-- Kanban Board View (For All Users) -->
+        <div class="kanban-board" cdkDropListGroup>
             <div *ngFor="let status of taskStatuses" class="kanban-column">
                 <div class="kanban-column-header">
                     <h3>{{ status.replace('_', ' ') }}</h3>
@@ -44,6 +20,11 @@
                         <p class="task-description">{{ task.description }}</p>
                         <div class="task-footer">
                             <span class="priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
+                            <!-- Founder Actions -->
+                            <div class="task-actions" *ngIf="isFounder">
+                                <button class="btn-edit" (click)="editTask(task)">Edit</button>
+                                <button class="btn-assign" (click)="assignTask(task)">Assign</button>
+                            </div>
                         </div>
                         <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
                     </div>

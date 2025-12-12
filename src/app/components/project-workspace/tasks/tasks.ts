@@ -32,7 +32,7 @@ export class ProjectTasksComponent implements OnInit {
         [TaskStatus.IN_PROGRESS]: [],
         [TaskStatus.COMPLETED]: []
     };
-    taskStatuses = Object.values(TaskStatus); // For iterating over columns
+    taskStatuses = Object.values(TaskStatus);
 
     constructor(
         private projectState: ProjectStateService,
@@ -78,8 +78,13 @@ export class ProjectTasksComponent implements OnInit {
             [TaskStatus.COMPLETED]: []
         };
         tasks.forEach(task => {
-            if (task.status && this.kanbanColumns[task.status]) {
-                this.kanbanColumns[task.status].push(task);
+            let status = task.status as any;
+            if (status === 'TODO') {
+                status = TaskStatus.PLANNED;
+            }
+
+            if (status && this.kanbanColumns[status]) {
+                this.kanbanColumns[status].push(task);
             }
         });
     }
@@ -134,7 +139,7 @@ export class ProjectTasksComponent implements OnInit {
 
     private updateTaskStatusBackend(taskId: number, status: TaskStatus, successCallback?: () => void): void {
         if (!this.selectedProjectId) return;
-        this.taskService.updateTask(taskId, { status: status }).subscribe({
+        this.taskService.updateTaskStatus(taskId, status).subscribe({
             next: () => {
                 console.log(`Task ${taskId} status updated to ${status}`);
                 if (successCallback) {
@@ -142,7 +147,7 @@ export class ProjectTasksComponent implements OnInit {
                 }
             },
             error: (err) => {
-                console.error('Error updating task status', err);
+                console.error('Error updating task status:', err);
                 // Optionally revert UI changes if backend update fails
                 this.loadTasks(this.selectedProjectId!); // Reload tasks to revert UI
             }

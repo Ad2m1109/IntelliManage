@@ -40,12 +40,12 @@
     border-radius: 8px;
     padding: 16px;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
 .task-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .task-header {
@@ -86,9 +86,21 @@
     font-weight: 600;
     text-transform: uppercase;
 }
-.status-badge.planned { background: #e3f2fd; color: #4a90e2; }
-.status-badge.in_progress { background: #fff8e1; color: var(--warning-color); }
-.status-badge.completed { background: #e8f5e9; color: var(--success-color); }
+
+.status-badge.planned {
+    background: #e3f2fd;
+    color: #4a90e2;
+}
+
+.status-badge.in_progress {
+    background: #fff8e1;
+    color: var(--warning-color);
+}
+
+.status-badge.completed {
+    background: #e8f5e9;
+    color: var(--success-color);
+}
 
 .priority {
     padding: 4px 10px;
@@ -96,9 +108,21 @@
     font-weight: 600;
     font-size: 11px;
 }
-.priority.high { background: #fdeaea; color: var(--error-color); }
-.priority.medium { background: #fff8e1; color: var(--warning-color); }
-.priority.low { background: #e8f5e9; color: var(--success-color); }
+
+.priority.high {
+    background: #fdeaea;
+    color: var(--error-color);
+}
+
+.priority.medium {
+    background: #fff8e1;
+    color: var(--warning-color);
+}
+
+.priority.low {
+    background: #e8f5e9;
+    color: var(--success-color);
+}
 
 
 /* Founder List View */
@@ -108,7 +132,8 @@
     gap: 20px;
 }
 
-.task-actions .btn-edit, .task-actions .btn-assign {
+.task-actions .btn-edit,
+.task-actions .btn-assign {
     padding: 6px 12px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -120,7 +145,8 @@
     transition: all 0.2s;
 }
 
-.task-actions .btn-edit:hover, .task-actions .btn-assign:hover {
+.task-actions .btn-edit:hover,
+.task-actions .btn-assign:hover {
     background-color: var(--background-color);
     color: var(--primary-color);
     border-color: var(--primary-color);
@@ -132,7 +158,8 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    min-height: calc(100vh - 250px); /* Ensure columns have height */
+    min-height: calc(100vh - 250px);
+    /* Ensure columns have height */
 }
 
 .kanban-column {
@@ -197,7 +224,8 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.empty-state, .empty-column-message {
+.empty-state,
+.empty-column-message {
     color: var(--text-secondary-color);
     text-align: center;
     padding: 20px;
