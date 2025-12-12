@@ -101,12 +101,6 @@ export class ProjectTasksComponent implements OnInit {
         this.taskToEdit = task;
     }
 
-    assignTask(task: Task) {
-        if (!this.isFounder) return;
-        this.showTaskForm = true;
-        this.taskToEdit = task; // Pre-fill the form with the task to assign
-    }
-
     // This method will be used by the Kanban board for employees
     updateStatus(task: Task) {
         const nextStatus = window.prompt('New status', task.status as any);

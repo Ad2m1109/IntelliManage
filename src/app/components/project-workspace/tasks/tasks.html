@@ -12,7 +12,8 @@
                     <h3>{{ status.replace('_', ' ') }}</h3>
                     <span>{{ kanbanColumns[status].length }}</span>
                 </div>
-                <div class="kanban-tasks" [id]="status" cdkDropList [cdkDropListData]="kanbanColumns[status]" (cdkDropListDropped)="drop($event)">
+                <div class="kanban-tasks" [id]="status" cdkDropList [cdkDropListData]="kanbanColumns[status]"
+                    (cdkDropListDropped)="drop($event)">
                     <div class="task-card kanban-card" *ngFor="let task of kanbanColumns[status]" cdkDrag>
                         <div class="task-header">
                             <h3>{{ task.title }}</h3>
@@ -23,7 +24,6 @@
                             <!-- Founder Actions -->
                             <div class="task-actions" *ngIf="isFounder">
                                 <button class="btn-edit" (click)="editTask(task)">Edit</button>
-                                <button class="btn-assign" (click)="assignTask(task)">Assign</button>
                             </div>
                         </div>
                         <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
@@ -36,6 +36,7 @@
         </div>
     </div>
 
-    <app-task-form *ngIf="showTaskForm" [task]="taskToEdit" (taskSubmitted)="handleTaskSubmitted($event)" (cancel)="handleCancel()">
+    <app-task-form *ngIf="showTaskForm" [task]="taskToEdit" (taskSubmitted)="handleTaskSubmitted($event)"
+        (cancel)="handleCancel()">
     </app-task-form>
 </div>

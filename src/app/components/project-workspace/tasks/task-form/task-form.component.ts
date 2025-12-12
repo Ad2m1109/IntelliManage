@@ -40,7 +40,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
     private memberService: MemberService,
     private sprintService: SprintService,
     private projectStateService: ProjectStateService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.projectSubscription = this.projectStateService.selectedProject$.subscribe(project => {
@@ -99,6 +99,8 @@ export class TaskFormComponent implements OnInit, OnDestroy {
         description: formValue.description,
         status: formValue.status,
         priority: formValue.priority,
+        assigneeId: formValue.assigneeId,
+        sprintId: formValue.sprintId,
         assignee: formValue.assigneeId ? { id: formValue.assigneeId } as User : undefined,
         sprint: formValue.sprintId ? { id: formValue.sprintId } as Sprint : undefined,
       };
