@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { config } from '../config';
 import { User } from '../models/user.model';
 
 export interface LoginRequest {
@@ -29,7 +29,7 @@ export interface AuthResponse {
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'current_user';
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private apiUrl = `${config.apiUrl}/auth`;
 
   constructor(
     private http: HttpClient,
