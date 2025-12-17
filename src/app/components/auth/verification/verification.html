@@ -6,7 +6,7 @@
             <p>We've sent a 6-digit code to <strong>{{ email }}</strong></p>
         </div>
 
-        <div class="verification-form">
+        <div class="auth-form">
             <div class="code-inputs">
                 @for (digit of code; track $index) {
                 <input #codeInput type="text" maxlength="1" [(ngModel)]="code[$index]" (input)="onInput($event, $index)"

@@ -26,16 +26,6 @@
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
 }
 
-.success-message {
-    padding: 12px;
-    background-color: #e6fffa;
-    color: #2c7a7b;
-    border: 1px solid #2c7a7b;
-    border-radius: 6px;
-    font-size: 14px;
-    text-align: center;
-    margin-bottom: 18px;
-}
 
 .resend-section {
     text-align: center;

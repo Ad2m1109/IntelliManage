@@ -97,6 +97,16 @@
     text-align: center;
 }
 
+.success-message {
+    padding: 12px;
+    background-color: #e6fffa;
+    color: #2c7a7b;
+    border: 1px solid #2c7a7b;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+}
+
 .submit-btn {
     padding: 14px;
     background-color: var(--primary-color);

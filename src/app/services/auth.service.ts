@@ -138,6 +138,15 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/resend-code`, { email });
   }
 
+  // Password reset methods
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(email: string, code: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password`, { email, code, newPassword });
+  }
+
   // Get current user from server
   me(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/me`);

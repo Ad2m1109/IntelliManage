@@ -31,6 +31,7 @@ export const routes: Routes = [
             { path: 'register', component: RegisterComponent },
             { path: 'verify-email', loadComponent: () => import('./components/auth/verification/verification').then(m => m.VerificationComponent) },
             { path: 'forgot-password', component: ForgotPasswordComponent },
+            { path: 'reset-password', loadComponent: () => import('./components/auth/reset-password/reset-password').then(m => m.ResetPasswordComponent) },
             { path: '', redirectTo: 'login', pathMatch: 'full' }
         ]
     },
