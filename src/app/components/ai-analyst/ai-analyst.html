@@ -1,6 +1,11 @@
 <div class="ai-analyst-container">
     <div class="chat-header">
-        <h2>AI Project Analyst</h2>
+        <div class="header-title">
+            <h2>AI Project Analyst</h2>
+            <button class="btn-insights" (click)="generateProjectInsights()" [disabled]="loading">
+                ✨ Generate Project Insights
+            </button>
+        </div>
         <p>Ask me anything about project management or general questions.</p>
     </div>
 

@@ -11,6 +11,8 @@ export interface Sprint {
     endDate: string;
     projectId: number;
     status: string; // PLANNED, ACTIVE, COMPLETED
+    progress: number;
+    tasks: any[];
 }
 
 @Injectable({

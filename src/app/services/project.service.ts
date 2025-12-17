@@ -41,4 +41,8 @@ export class ProjectService {
     deleteProject(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
+
+    getDashboardData(projectId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${projectId}/dashboard`);
+    }
 }

@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AiService } from '../../services/ai.service';
+import { ProjectStateService } from '../../services/project-state.service';
+import { TaskService } from '../../services/task.service';
+import { SprintService } from '../../services/sprint.service';
+import { forkJoin } from 'rxjs';
 
 interface ChatMessage {
   text: string;
@@ -20,7 +24,12 @@ export class AiAnalystComponent implements OnInit {
   userInput: string = '';
   loading: boolean = false;
 
-  constructor(private aiService: AiService) { }
+  constructor(
+    private aiService: AiService,
+    private projectState: ProjectStateService,
+    private taskService: TaskService,
+    private sprintService: SprintService
+  ) { }
 
   ngOnInit() {
     this.loadChatHistory();
@@ -68,6 +77,58 @@ export class AiAnalystComponent implements OnInit {
       error: (err) => {
         console.error('AI Error:', err);
         this.messages.push({ text: 'Error communicating with AI Analyst.', sender: 'ai' });
+        this.loading = false;
+      }
+    });
+  }
+
+  generateProjectInsights() {
+    const project = this.projectState.getCurrentProject();
+    if (!project) return;
+
+    this.loading = true;
+    this.messages.push({ text: 'Generating project insights...', sender: 'user' });
+
+    forkJoin({
+      tasks: this.taskService.getProjectTasks(project.id),
+      sprints: this.sprintService.getProjectSprints(project.id)
+    }).subscribe({
+      next: (data) => {
+        const taskSummary = data.tasks.map(t => `- ${t.title} (${t.status}, ${t.priority})`).join('\n');
+        const sprintSummary = data.sprints.map(s => `- ${s.name} (${s.status}, Goal: ${s.goal})`).join('\n');
+
+        const prompt = `
+          Analyze the following project data and provide:
+          1. A concise progress summary.
+          2. Risk detection (e.g., blocked tasks, overdue sprints).
+          3. Sprint health analysis.
+
+          Project: ${project.name}
+          Description: ${project.description}
+
+          Tasks:
+          ${taskSummary}
+
+          Sprints:
+          ${sprintSummary}
+        `;
+
+        this.aiService.generateContent(prompt).subscribe({
+          next: (response) => {
+            const aiText = response.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI.';
+            this.messages.push({ text: aiText, sender: 'ai' });
+            this.loading = false;
+            this.aiService.saveMessage(aiText, 'ai').subscribe();
+          },
+          error: (err) => {
+            console.error('AI Error:', err);
+            this.messages.push({ text: 'Error generating insights.', sender: 'ai' });
+            this.loading = false;
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching project data', err);
         this.loading = false;
       }
     });

@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ProjectStateService } from '../../services/project-state.service';
+import { Project } from '../../models/project.model';
+import { Subscription } from 'rxjs';
 
 interface MenuItem {
   label: string;
@@ -19,27 +22,51 @@ interface MenuItem {
 export class SidebarComponent implements OnInit {
   menuItems: MenuItem[] = [];
   roleBasePath: string = '';
+  selectedProject: Project | null = null;
+  private projectSub: Subscription | null = null;
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private projectState: ProjectStateService
+  ) { }
 
   ngOnInit() {
-    this.buildMenuByRole();
+    this.projectSub = this.projectState.selectedProject$.subscribe(project => {
+      this.selectedProject = project;
+      this.buildMenu();
+    });
   }
 
-  buildMenuByRole() {
+  buildMenu() {
     const userRole = this.authService.getUserRole();
+    this.roleBasePath = userRole === 'FOUNDER' ? '/founder' : '/employee';
 
-    if (userRole === 'FOUNDER') {
-      this.roleBasePath = '/founder';
+    if (this.selectedProject) {
       this.menuItems = [
-        { label: 'Projects', route: `${this.roleBasePath}/projects`, icon: '📁' },
+        { label: 'Dashboard', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/dashboard`, icon: '📊' },
+        { label: 'Tasks', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/tasks`, icon: '📋' },
+        { label: 'Sprints', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/sprints`, icon: '🏃' },
+        { label: 'Members', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/members`, icon: '👥' },
+        { label: 'AI Analyst', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/ai-analyst`, icon: '🤖' },
+        { label: 'Back to Projects', route: `${this.roleBasePath}/projects`, icon: '⬅️' },
       ];
-    } else if (userRole === 'EMPLOYEE') {
-      this.roleBasePath = '/employee';
-      this.menuItems = [
-        { label: 'Invitations', route: `${this.roleBasePath}/invitations`, icon: '✉️' },
-        { label: 'Projects', route: `${this.roleBasePath}/projects`, icon: '📁' },
-      ];
+    } else {
+      if (userRole === 'FOUNDER') {
+        this.menuItems = [
+          { label: 'Projects', route: `${this.roleBasePath}/projects`, icon: '📁' },
+        ];
+      } else if (userRole === 'EMPLOYEE') {
+        this.menuItems = [
+          { label: 'Invitations', route: `${this.roleBasePath}/invitations`, icon: '✉️' },
+          { label: 'Projects', route: `${this.roleBasePath}/projects`, icon: '📁' },
+        ];
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.projectSub) {
+      this.projectSub.unsubscribe();
     }
   }
 }

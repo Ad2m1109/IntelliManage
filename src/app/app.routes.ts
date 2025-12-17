@@ -50,7 +50,8 @@ export const routes: Routes = [
                 path: 'projects/:projectId',
                 component: ProjectWorkspaceComponent,
                 children: [
-                    { path: '', redirectTo: 'tasks', pathMatch: 'full' },
+                    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+                    { path: 'dashboard', loadComponent: () => import('./components/project-workspace/dashboard/dashboard').then(m => m.ProjectDashboardComponent) },
                     { path: 'tasks', component: ProjectTasksComponent },
                     { path: 'members', component: ProjectMembersComponent },
                     { path: 'sprints', component: ProjectSprintsComponent },
@@ -74,7 +75,8 @@ export const routes: Routes = [
                 path: 'projects/:projectId',
                 component: ProjectWorkspaceComponent,
                 children: [
-                    { path: '', redirectTo: 'tasks', pathMatch: 'full' },
+                    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+                    { path: 'dashboard', loadComponent: () => import('./components/project-workspace/dashboard/dashboard').then(m => m.ProjectDashboardComponent) },
                     { path: 'tasks', component: ProjectTasksComponent },
                     { path: 'members', component: ProjectMembersComponent },
                     { path: 'sprints', component: ProjectSprintsComponent },
