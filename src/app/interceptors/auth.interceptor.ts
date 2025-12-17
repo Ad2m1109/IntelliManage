@@ -6,10 +6,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const authService = inject(AuthService);
     const token = authService.getToken();
 
-    // Check if the request is for the register endpoint
-    // and if it's a POST request (registration)
-    if (req.url.includes('/auth/register') && req.method === 'POST') {
-        return next(req); // Do not add token for registration
+    // Check if the request is for the register or login endpoint
+    if ((req.url.includes('/auth/register') && req.method === 'POST') ||
+        (req.url.includes('/auth/login') && req.method === 'POST')) {
+        return next(req); // Do not add token for registration or login
     }
 
     if (token) {

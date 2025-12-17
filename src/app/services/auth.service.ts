@@ -36,9 +36,35 @@ export class AuthService {
     private router: Router
   ) { }
 
+  private _decodeToken(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      return null;
+    }
+  }
+
   // Check if user is logged in
   isLoggedIn(): boolean {
-    return !!localStorage.getItem(this.TOKEN_KEY);
+    const token = this.getToken();
+    if (!token) {
+      return false;
+    }
+
+    const decodedToken = this._decodeToken(token);
+    if (!decodedToken || !decodedToken.exp) {
+      return false;
+    }
+
+    const expirationDate = new Date(0);
+    expirationDate.setUTCSeconds(decodedToken.exp);
+
+    return expirationDate.valueOf() > new Date().valueOf();
   }
 
   // Get current user

@@ -5,6 +5,10 @@ import { config } from '../config';
 import { Task } from '../models/task.model';
 
 
+import { HttpParams } from '@angular/common/http';
+
+// ... (imports)
+
 @Injectable({
     providedIn: 'root'
 })
@@ -16,6 +20,17 @@ export class TaskService {
     getProjectTasks(projectId: number): Observable<Task[]> {
         return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks`);
     }
+
+    getFilteredTasks(projectId: number, filters: any): Observable<Task[]> {
+        let params = new HttpParams();
+        Object.keys(filters).forEach(key => {
+            if (filters[key]) {
+                params = params.append(key, filters[key]);
+            }
+        });
+        return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks/filter`, { params });
+    }
+
 
     // Return tasks assigned to the authenticated user within a project
     getMyTasks(projectId: number): Observable<Task[]> {
