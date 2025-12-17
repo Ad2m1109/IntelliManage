@@ -40,7 +40,7 @@ export class AuthService {
     try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
       return JSON.parse(jsonPayload);
@@ -114,6 +114,28 @@ export class AuthService {
           }
         })
       );
+  }
+
+  // Google Login method
+  googleLogin(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/google`, { idToken })
+      .pipe(
+        tap(response => {
+          if (response.token && response.user) {
+            localStorage.setItem(this.TOKEN_KEY, response.token);
+            localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+          }
+        })
+      );
+  }
+
+  // Email verification methods
+  verifyEmail(email: string, code: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/verify-email`, { email, code });
+  }
+
+  resendVerificationCode(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/resend-code`, { email });
   }
 
   // Get current user from server

@@ -1,0 +1,42 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>IntelliManage</h1>
+            <h2>Verify Your Email</h2>
+            <p>We've sent a 6-digit code to <strong>{{ email }}</strong></p>
+        </div>
+
+        <div class="verification-form">
+            <div class="code-inputs">
+                @for (digit of code; track $index) {
+                <input #codeInput type="text" maxlength="1" [(ngModel)]="code[$index]" (input)="onInput($event, $index)"
+                    (keydown)="onKeyDown($event, $index)" (paste)="onPaste($event)" [disabled]="loading"
+                    autocomplete="off" />
+                }
+            </div>
+
+            @if (error) {
+            <div class="error-message">{{ error }}</div>
+            }
+
+            @if (success) {
+            <div class="success-message">{{ success }}</div>
+            }
+
+            <button class="submit-btn" (click)="verify()" [disabled]="loading || code.join('').length !== 6">
+                {{ loading ? 'Verifying...' : 'Verify Email' }}
+            </button>
+
+            <div class="resend-section">
+                <p>Didn't receive the code?</p>
+                <button class="resend-btn" (click)="resendCode()" [disabled]="resendDisabled || loading">
+                    {{ resendDisabled ? 'Resend in ' + countdown + 's' : 'Resend Code' }}
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <a routerLink="/auth/login">Back to Login</a>
+            </div>
+        </div>
+    </div>
+</div>

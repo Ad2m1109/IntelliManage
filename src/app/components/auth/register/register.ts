@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { RoleType } from '../../../models/role-type.enum';
+import { config } from '../../../config';
+
+declare var google: any;
 
 @Component({
   selector: 'app-register',
@@ -12,7 +15,7 @@ import { RoleType } from '../../../models/role-type.enum';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, AfterViewInit {
   fullName: string = '';
   email: string = '';
   password: string = '';
@@ -26,8 +29,61 @@ export class RegisterComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) { }
+
+  ngOnInit() {
+    if (this.authService.isLoggedIn()) {
+      this.redirectUser();
+    }
+  }
+
+  ngAfterViewInit() {
+    this.initializeGoogleSignIn();
+  }
+
+  private initializeGoogleSignIn() {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: config.googleClientId,
+        callback: (response: any) => this.handleGoogleLogin(response)
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById('google-signup-btn'),
+        { theme: 'outline', size: 'large', width: '100%', text: 'signup_with' }
+      );
+    }
+  }
+
+  private handleGoogleLogin(response: any) {
+    this.loading = true;
+    this.authService.googleLogin(response.credential).subscribe({
+      next: () => {
+        this.ngZone.run(() => {
+          this.redirectUser();
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          this.error = 'Google signup failed. Please try again.';
+          this.loading = false;
+        });
+      }
+    });
+  }
+
+  private redirectUser() {
+    const userRole = this.authService.getUserRole();
+    if (userRole === 'FOUNDER') {
+      this.router.navigate(['/founder/projects']);
+    } else if (userRole === 'EMPLOYEE') {
+      this.router.navigate(['/employee/projects']);
+    } else {
+      this.router.navigate(['/auth/login']);
+    }
+  }
 
   onSubmit() {
     // Validation
@@ -57,17 +113,7 @@ export class RegisterComponent {
     }).subscribe({
       next: (response) => {
         console.log('Registration successful:', response.message);
-
-        // Redirect based on user role
-        const userRole = this.authService.getUserRole();
-        if (userRole === 'FOUNDER') {
-          this.router.navigate(['/founder/projects']);
-        } else if (userRole === 'EMPLOYEE') {
-          this.router.navigate(['/employee/projects']);
-        } else {
-          // Fallback to login if role is unknown
-          this.router.navigate(['/auth/login']);
-        }
+        this.router.navigate(['/auth/verify-email'], { queryParams: { email: this.email } });
       },
       error: (err) => {
         console.error('Registration error:', err);

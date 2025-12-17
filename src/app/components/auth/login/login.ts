@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { config } from '../../../config';
+
+declare var google: any;
 
 @Component({
   selector: 'app-login',
@@ -11,7 +14,7 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, AfterViewInit {
   email: string = '';
   password: string = '';
   loading: boolean = false;
@@ -19,8 +22,62 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) { }
+
+  ngOnInit() {
+    // Check if user is already logged in
+    if (this.authService.isLoggedIn()) {
+      this.redirectUser();
+    }
+  }
+
+  ngAfterViewInit() {
+    this.initializeGoogleSignIn();
+  }
+
+  private initializeGoogleSignIn() {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: config.googleClientId,
+        callback: (response: any) => this.handleGoogleLogin(response)
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById('google-btn'),
+        { theme: 'outline', size: 'large', width: '100%' }
+      );
+    }
+  }
+
+  private handleGoogleLogin(response: any) {
+    this.loading = true;
+    this.authService.googleLogin(response.credential).subscribe({
+      next: () => {
+        this.ngZone.run(() => {
+          this.redirectUser();
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          this.error = 'Google login failed. Please try again.';
+          this.loading = false;
+        });
+      }
+    });
+  }
+
+  private redirectUser() {
+    const userRole = this.authService.getUserRole();
+    if (userRole === 'FOUNDER') {
+      this.router.navigate(['/founder/projects']);
+    } else if (userRole === 'EMPLOYEE') {
+      this.router.navigate(['/employee/projects']);
+    } else {
+      this.router.navigate(['/auth/login']);
+    }
+  }
 
   onSubmit() {
     if (!this.email || !this.password) {

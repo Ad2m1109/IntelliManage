@@ -1,0 +1,78 @@
+@import url('../login/login.css');
+
+.code-inputs {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.code-inputs input {
+    width: 45px;
+    height: 55px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--surface-color);
+    color: var(--text-primary-color);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.code-inputs input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.success-message {
+    padding: 12px;
+    background-color: #e6fffa;
+    color: #2c7a7b;
+    border: 1px solid #2c7a7b;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.resend-section {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.resend-section p {
+    font-size: 14px;
+    color: var(--text-secondary-color);
+    margin-bottom: 8px;
+}
+
+.resend-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.resend-btn:disabled {
+    color: var(--text-secondary-color);
+    cursor: not-allowed;
+}
+
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.auth-footer a {
+    color: var(--text-secondary-color);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}

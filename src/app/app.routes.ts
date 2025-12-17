@@ -29,6 +29,7 @@ export const routes: Routes = [
         children: [
             { path: 'login', component: LoginComponent },
             { path: 'register', component: RegisterComponent },
+            { path: 'verify-email', loadComponent: () => import('./components/auth/verification/verification').then(m => m.VerificationComponent) },
             { path: 'forgot-password', component: ForgotPasswordComponent },
             { path: '', redirectTo: 'login', pathMatch: 'full' }
         ]

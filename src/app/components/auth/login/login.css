@@ -137,3 +137,30 @@
 .auth-footer a:hover {
     text-decoration: underline;
 }
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 16px 0;
+    color: var(--text-secondary-color);
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.divider span {
+    margin: 0 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.google-btn-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
