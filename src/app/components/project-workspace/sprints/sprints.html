@@ -17,7 +17,7 @@
             </div>
 
             <!-- Sprint Cards -->
-            <div class="sprint-card" *ngFor="let sprint of sprints" (click)="viewSprintTasks(sprint.id)">
+            <div class="sprint-card" *ngFor="let sprint of filteredSprints" (click)="viewSprintTasks(sprint.id)">
                 <div class="sprint-header">
                     <h3>{{ sprint.name }}</h3>
                     <span class="status" [class]="sprint.status?.toLowerCase()">{{ sprint.status || 'PLANNED' }}</span>
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <div class="empty-state" *ngIf="!loading && sprints.length === 0">
+        <div class="empty-state" *ngIf="!loading && filteredSprints.length === 0">
             <p>No sprints found.</p>
             <button class="btn btn-primary" *ngIf="isFounder" (click)="createSprint()">Create First Sprint</button>
         </div>

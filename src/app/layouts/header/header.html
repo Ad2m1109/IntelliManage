@@ -6,7 +6,7 @@
         </span>
     </div>
     <div class="header-center">
-        <input type="search" placeholder="Search projects, tasks..." class="search-input">
+        <input type="search" placeholder="Search projects, tasks..." class="search-input" [(ngModel)]="searchTerm" (input)="onSearch()">
     </div>
     <div class="header-right">
         <div class="user-menu">

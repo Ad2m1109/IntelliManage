@@ -1,6 +1,6 @@
 <div class="main-layout" [class.founder-theme]="userRole === 'FOUNDER'"
     [class.employee-theme]="userRole === 'EMPLOYEE'">
-    <app-header></app-header>
+    <app-header (searchEvent)="handleSearch($event)"></app-header>
     <div class="layout-container">
         <app-sidebar></app-sidebar>
         <main class="content">

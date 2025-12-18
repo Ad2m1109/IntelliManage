@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
 import { Project } from '../../models/project.model';
+import { SearchService } from '../../services/search.service'; // Import SearchService
+import { Subscription } from 'rxjs'; // Import Subscription
 
 @Component({
   selector: 'app-project',
@@ -12,16 +14,19 @@ import { Project } from '../../models/project.model';
   templateUrl: './project.html',
   styleUrl: './project.css',
 })
-export class ProjectComponent implements OnInit {
-  projects: Project[] = [];
+export class ProjectComponent implements OnInit, OnDestroy { // Implement OnDestroy
+  allProjects: Project[] = []; // Store all projects
+  filteredProjects: Project[] = []; // Store filtered projects
   roleBasePath: string = '';
   isFounder = false;
   isLoading = false;
+  private searchSubscription: Subscription = new Subscription(); // To manage subscription
 
   constructor(
     private projectService: ProjectService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private searchService: SearchService // Inject SearchService
   ) { }
 
   ngOnInit(): void {
@@ -32,7 +37,8 @@ export class ProjectComponent implements OnInit {
 
     this.projectService.getProjects().subscribe({
       next: (data) => {
-        this.projects = data;
+        this.allProjects = data;
+        this.filteredProjects = data; // Initialize filtered projects with all projects
         this.isLoading = false;
       },
       error: (err) => {
@@ -40,6 +46,28 @@ export class ProjectComponent implements OnInit {
         this.isLoading = false;
       }
     });
+
+    // Subscribe to search term changes
+    this.searchSubscription = this.searchService.searchTerm$.subscribe(term => {
+      this.filterProjects(term);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription.unsubscribe(); // Unsubscribe to prevent memory leaks
+  }
+
+  filterProjects(searchTerm: string): void {
+    if (!searchTerm) {
+      this.filteredProjects = this.allProjects; // If no search term, show all projects
+      return;
+    }
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    this.filteredProjects = this.allProjects.filter(project =>
+      project.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+      project.description.toLowerCase().includes(lowerCaseSearchTerm)
+      // Add more fields to search if needed
+    );
   }
 
   navigateToProject(projectId: number) {

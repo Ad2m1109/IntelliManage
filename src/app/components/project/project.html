@@ -8,13 +8,13 @@
         <p>Loading projects...</p>
     </div>
 
-    <div *ngIf="!isLoading && projects.length === 0" class="empty-state">
+    <div *ngIf="!isLoading && filteredProjects.length === 0" class="empty-state">
         <p>No projects found.</p>
         <button class="btn btn-secondary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">Create Your First Project</button>
     </div>
     
-    <div class="projects-grid" *ngIf="!isLoading && projects.length > 0">
-        <div class="project-card" *ngFor="let project of projects" (click)="navigateToProject(project.id)">
+    <div class="projects-grid" *ngIf="!isLoading && filteredProjects.length > 0">
+        <div class="project-card" *ngFor="let project of filteredProjects" (click)="navigateToProject(project.id)">
             <div class="card-header">
                 <h3>{{ project.name }}</h3>
                 <span class="status-badge" [class]="project.status.toLowerCase()">{{ project.status }}</span>

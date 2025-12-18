@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProjectStateService } from '../../../services/project-state.service';
 import { SprintService, Sprint } from '../../../services/sprint.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { SprintFormComponent } from './sprint-form/sprint-form.component';
+import { SearchService } from '../../../services/search.service'; // Import SearchService
+import { Subscription } from 'rxjs'; // Import Subscription
 
 @Component({
     selector: 'app-project-sprints',
@@ -13,20 +15,23 @@ import { SprintFormComponent } from './sprint-form/sprint-form.component';
     templateUrl: './sprints.html',
     styleUrl: './sprints.css'
 })
-export class ProjectSprintsComponent implements OnInit {
-    sprints: Sprint[] = [];
+export class ProjectSprintsComponent implements OnInit, OnDestroy { // Implement OnDestroy
+    allSprints: Sprint[] = []; // Store all sprints
+    filteredSprints: Sprint[] = []; // Store filtered sprints
     loading = false;
     isFounder = false;
     selectedProjectId?: number;
 
     showSprintForm = false;
     sprintToEdit: Sprint | null = null;
+    private searchSubscription: Subscription = new Subscription(); // To manage subscription
 
     constructor(
         private projectState: ProjectStateService,
         private sprintService: SprintService,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private searchService: SearchService // Inject SearchService
     ) { }
 
     ngOnInit() {
@@ -37,20 +42,44 @@ export class ProjectSprintsComponent implements OnInit {
                 this.loadSprints(project.id);
             }
         });
+
+        // Subscribe to search term changes
+        this.searchSubscription = this.searchService.searchTerm$.subscribe(term => {
+            this.filterSprints(term);
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.searchSubscription.unsubscribe(); // Unsubscribe to prevent memory leaks
     }
 
     loadSprints(projectId: number) {
         this.loading = true;
         this.sprintService.getProjectSprints(projectId).subscribe({
             next: (data) => {
-                this.sprints = data;
+                this.allSprints = data;
+                this.filteredSprints = data; // Initialize filtered sprints with all sprints
                 this.loading = false;
+                this.filterSprints(this.searchService.getSearchTerm()); // Apply current search term
             },
             error: (err) => {
                 console.error('Error loading sprints', err);
                 this.loading = false;
             }
         });
+    }
+
+    filterSprints(searchTerm: string): void {
+        if (!searchTerm) {
+            this.filteredSprints = this.allSprints; // If no search term, show all sprints
+            return;
+        }
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        this.filteredSprints = this.allSprints.filter(sprint =>
+            sprint.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+            (sprint.goal && sprint.goal.toLowerCase().includes(lowerCaseSearchTerm))
+            // Add more fields to search if needed
+        );
     }
 
     createSprint() {

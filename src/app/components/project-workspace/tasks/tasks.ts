@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectStateService } from '../../../services/project-state.service';
@@ -12,6 +12,8 @@ import { TaskStatus } from '../../../models/task-status.enum';
 import { MemberService } from '../../../services/member.service';
 import { ProjectMember } from '../../../models/project-member.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SearchService } from '../../../services/search.service'; // Import SearchService
+import { Subscription } from 'rxjs'; // Import Subscription
 
 @Component({
     selector: 'app-project-tasks',
@@ -20,8 +22,9 @@ import { ActivatedRoute, Router } from '@angular/router';
     templateUrl: './tasks.html',
     styleUrl: './tasks.css'
 })
-export class ProjectTasksComponent implements OnInit {
-    tasks: Task[] = [];
+export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement OnDestroy
+    allTasks: Task[] = []; // Store all tasks
+    filteredTasks: Task[] = []; // Store tasks after applying search and other filters
     loading = false;
     userRole: string = '';
     isFounder: boolean = false;
@@ -50,6 +53,7 @@ export class ProjectTasksComponent implements OnInit {
         unassigned: false
     };
     employeeView: 'mine' | 'all' = 'mine';
+    private searchSubscription: Subscription = new Subscription(); // To manage subscription
 
 
     constructor(
@@ -58,7 +62,8 @@ export class ProjectTasksComponent implements OnInit {
         public authService: AuthService,
         private memberService: MemberService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private searchService: SearchService // Inject SearchService
     ) { }
 
     ngOnInit() {
@@ -86,18 +91,29 @@ export class ProjectTasksComponent implements OnInit {
                 }
             });
         });
+
+        // Subscribe to search term changes
+        this.searchSubscription = this.searchService.searchTerm$.subscribe(term => {
+            this.applyAllFilters(term); // Apply search term along with other filters
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.searchSubscription.unsubscribe(); // Unsubscribe to prevent memory leaks
     }
 
     loadInitialTasks() {
         if (!this.selectedProjectId) return;
         this.loading = true;
 
+        const currentSearchTerm = this.searchService.getSearchTerm();
+
         // If we have a sprintId filter, use getFilteredTasks even for initial load
         if (this.filters.sprintId !== null) {
             this.taskService.getFilteredTasks(this.selectedProjectId, this.filters).subscribe({
                 next: (data) => {
-                    this.tasks = data;
-                    this.groupTasksIntoKanbanColumns(data);
+                    this.allTasks = data;
+                    this.applyAllFilters(currentSearchTerm); // Apply search term after loading
                     this.loading = false;
                 },
                 error: (err) => {
@@ -114,8 +130,8 @@ export class ProjectTasksComponent implements OnInit {
 
         obs.subscribe({
             next: (data) => {
-                this.tasks = data;
-                this.groupTasksIntoKanbanColumns(data);
+                this.allTasks = data;
+                this.applyAllFilters(currentSearchTerm); // Apply search term after loading
                 this.loading = false;
             },
             error: (err) => {
@@ -134,10 +150,11 @@ export class ProjectTasksComponent implements OnInit {
     applyFilters() {
         if (!this.isFounder || !this.selectedProjectId) return;
         this.loading = true;
+        const currentSearchTerm = this.searchService.getSearchTerm();
         this.taskService.getFilteredTasks(this.selectedProjectId, this.filters).subscribe({
             next: (data) => {
-                this.tasks = data;
-                this.groupTasksIntoKanbanColumns(data);
+                this.allTasks = data;
+                this.applyAllFilters(currentSearchTerm); // Apply search term after loading
                 this.loading = false;
             },
             error: (err) => {
@@ -146,6 +163,34 @@ export class ProjectTasksComponent implements OnInit {
             }
         });
     }
+
+    applyAllFilters(searchTerm: string = this.searchService.getSearchTerm()): void {
+        let tempTasks = [...this.allTasks];
+
+        // Apply search term filter
+        if (searchTerm) {
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+            tempTasks = tempTasks.filter(task =>
+                task.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+                (task.description && task.description.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                (task.assigneeName && task.assigneeName.toLowerCase().includes(lowerCaseSearchTerm))
+            );
+        }
+
+        // Apply existing filters (assignee, sprint, status, priority, unassigned)
+        // Note: The existing `filters` object is already applied when `getFilteredTasks` is called.
+        // This `applyAllFilters` method is primarily for client-side search term filtering
+        // on top of the already fetched (potentially backend-filtered) `allTasks`.
+        // If `allTasks` already reflects backend filters, no need to re-apply them here.
+        // If `allTasks` is truly *all* tasks, then the `filters` logic would need to be
+        // re-implemented here for client-side filtering.
+        // For now, assuming `allTasks` comes from `getFilteredTasks` or `getProjectTasks/getMyTasks`
+        // which already respect `this.filters` (except for search term).
+
+        this.filteredTasks = tempTasks;
+        this.groupTasksIntoKanbanColumns(this.filteredTasks);
+    }
+
 
     toggleEmployeeView(view: 'mine' | 'all') {
         if (this.isFounder || !this.selectedProjectId) return;
@@ -157,8 +202,8 @@ export class ProjectTasksComponent implements OnInit {
 
         obs.subscribe({
             next: (data) => {
-                this.tasks = data;
-                this.groupTasksIntoKanbanColumns(data);
+                this.allTasks = data;
+                this.applyAllFilters(); // Apply search term after loading
                 this.loading = false;
                 console.log(`Toggling employee view to: ${view}`);
                 console.log('--- Tasks Loaded (Employee View Toggle) ---');
