@@ -1,0 +1,36 @@
+<div class="sprint-form-container">
+  <form [formGroup]="sprintForm" (ngSubmit)="onSubmit()">
+    <h3>{{ sprint ? 'Edit Sprint' : 'Create New Sprint' }}</h3>
+
+    <div class="form-group">
+      <label for="name">Sprint Name</label>
+      <input id="name" type="text" formControlName="name" />
+      <div *ngIf="sprintForm.get('name')?.invalid && sprintForm.get('name')?.touched" class="error-message">
+        Name is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="goal">Goal</label>
+      <textarea id="goal" formControlName="goal" rows="3"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input id="startDate" type="date" formControlName="startDate" />
+      </div>
+      <div class="form-group">
+        <label for="endDate">End Date</label>
+        <input id="endDate" type="date" formControlName="endDate" />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="sprintForm.invalid">
+        {{ sprint ? 'Update Sprint' : 'Create Sprint' }}
+      </button>
+    </div>
+  </form>
+</div>
