@@ -1,7 +1,7 @@
 <div class="members-container">
     <div class="header">
         <h2>Team Members</h2>
-        <button class="btn-primary" *ngIf="isFounder" (click)="inviteMember()">+ Invite Member</button>
+        <button class="btn btn-primary" *ngIf="isFounder" (click)="inviteMember()">+ Invite Member</button>
     </div>
 
     <div class="members-list" *ngIf="!loading && members.length > 0">
@@ -12,7 +12,7 @@
                 <span class="role">{{ member.roleInProject }}</span>
             </div>
             <div class="member-actions">
-                <button class="btn-remove" *ngIf="isFounder" (click)="removeMember(member.userId)">Remove</button>
+                <button class="btn btn-danger" *ngIf="isFounder" (click)="removeMember(member.userId)">Remove</button>
             </div>
         </div>
     </div>

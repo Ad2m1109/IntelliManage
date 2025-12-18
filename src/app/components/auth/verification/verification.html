@@ -23,13 +23,13 @@
             <div class="success-message">{{ success }}</div>
             }
 
-            <button class="submit-btn" (click)="verify()" [disabled]="loading || code.join('').length !== 6">
+            <button class="btn btn-primary" (click)="verify()" [disabled]="loading || code.join('').length !== 6">
                 {{ loading ? 'Verifying...' : 'Verify Email' }}
             </button>
 
             <div class="resend-section">
                 <p>Didn't receive the code?</p>
-                <button class="resend-btn" (click)="resendCode()" [disabled]="resendDisabled || loading">
+                <button class="btn btn-secondary" (click)="resendCode()" [disabled]="resendDisabled || loading">
                     {{ resendDisabled ? 'Resend in ' + countdown + 's' : 'Resend Code' }}
                 </button>
             </div>

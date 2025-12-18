@@ -1,0 +1,146 @@
+/* Base Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 0.375rem; /* Equivalent to Tailwind's rounded-md */
+  transition: all 0.15s ease-in-out;
+}
+
+/* Primary Button */
+.btn-primary {
+  color: #ffffff;
+  background-color: #007bff; /* Bootstrap primary blue */
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  color: #ffffff;
+  background-color: #0056b3; /* Darker blue on hover */
+  border-color: #0056b3;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+  color: #ffffff;
+  background-color: #007bff;
+  border-color: #007bff;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  color: #343a40; /* Dark gray */
+  background-color: #e2e6ea; /* Light gray */
+  border-color: #e2e6ea;
+}
+
+.btn-secondary:hover {
+  color: #343a40;
+  background-color: #dae0e5;
+  border-color: #dae0e5;
+}
+
+.btn-secondary:focus,
+.btn-secondary.focus {
+  box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
+}
+
+.btn-secondary:disabled,
+.btn-secondary.disabled {
+  color: #343a40;
+  background-color: #e2e6ea;
+  border-color: #e2e6ea;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Danger Button */
+.btn-danger {
+  color: #ffffff;
+  background-color: #dc3545; /* Bootstrap danger red */
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  color: #ffffff;
+  background-color: #c82333; /* Darker red on hover */
+  border-color: #c82333;
+}
+
+.btn-danger:focus,
+.btn-danger.focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+}
+
+.btn-danger:disabled,
+.btn-danger.disabled {
+  color: #ffffff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Outline Buttons */
+.btn-outline-primary {
+  color: #007bff;
+  background-color: transparent;
+  border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+  color: #ffffff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-outline-danger {
+  color: #dc3545;
+  background-color: transparent;
+  border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+  color: #ffffff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* Small Button */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem; /* Equivalent to Tailwind's rounded-sm */
+}
+
+/* Large Button */
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  border-radius: 0.5rem; /* Equivalent to Tailwind's rounded-lg */
+}
+
+/* Block Button */
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.btn-block + .btn-block {
+  margin-top: 0.5rem;
+}

@@ -1,7 +1,7 @@
 <div class="tasks-container">
     <div class="header">
         <div class="header-title-section">
-            <button class="btn-icon-back" (click)="backToSprints()" title="Back to Sprints">
+            <button class="btn btn-secondary btn-sm" (click)="backToSprints()" title="Back to Sprints">
                 <span class="back-arrow">←</span>
             </button>
             <h2>Tasks</h2>
@@ -12,7 +12,7 @@
                 <button [class.active]="employeeView === 'mine'" (click)="toggleEmployeeView('mine')">My Tasks</button>
                 <button [class.active]="employeeView === 'all'" (click)="toggleEmployeeView('all')">All Tasks</button>
             </div>
-            <button class="btn-primary" *ngIf="isFounder && !showTaskForm" (click)="createTask()">+ New Task</button>
+            <button class="btn btn-primary" *ngIf="isFounder && !showTaskForm" (click)="createTask()">+ New Task</button>
         </div>
     </div>
 
@@ -59,7 +59,7 @@
                         <div class="task-footer">
                             <span class="priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
                             <div class="task-actions" *ngIf="isFounder">
-                                <button class="btn-edit"
+                                <button class="btn btn-secondary btn-sm"
                                     (click)="editTask(task); $event.stopPropagation()">Edit</button>
                             </div>
                         </div>

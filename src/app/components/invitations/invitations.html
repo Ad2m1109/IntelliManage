@@ -11,7 +11,7 @@
       <h3>Send Invitation</h3>
       <p>Select a project and enter an email to invite a member.</p>
       <!-- Placeholder for send invitation form -->
-      <button class="btn-primary">Invite Member</button>
+      <button class="btn btn-primary">Invite Member</button>
     </div>
 
     <div class="sent-invitations mt-4">
@@ -33,8 +33,8 @@
           </div>
           <p class="invited-by">Invited by: <strong>{{ invitation.invitedByName }}</strong></p>
           <div class="actions">
-            <button class="btn-accept" (click)="acceptInvitation(invitation.id)">Accept</button>
-            <button class="btn-reject" (click)="rejectInvitation(invitation.id)">Reject</button>
+            <button class="btn btn-primary" (click)="acceptInvitation(invitation.id)">Accept</button>
+            <button class="btn btn-danger" (click)="rejectInvitation(invitation.id)">Reject</button>
           </div>
         </div>
       </div>

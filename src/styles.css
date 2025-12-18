@@ -1,3 +1,5 @@
+@import './app/shared-styles/buttons.css';
+
 :root {
   /* Core Color Palette */
   --primary-color: #4A90E2;

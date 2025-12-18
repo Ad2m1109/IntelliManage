@@ -1,7 +1,7 @@
 <div class="sprints-container">
     <div class="header">
         <h2>Sprints</h2>
-        <button class="btn-primary" *appHasRole="'FOUNDER'" (click)="createSprint()">+ New Sprint</button>
+        <button class="btn btn-primary" *appHasRole="'FOUNDER'" (click)="createSprint()">+ New Sprint</button>
     </div>
 
     <div class="sprints-list" *ngIf="!loading">
@@ -44,17 +44,17 @@
             </div>
 
             <div class="sprint-actions" *appHasRole="'FOUNDER'">
-                <button class="btn-secondary" *ngIf="sprint.status !== 'ACTIVE' && sprint.status !== 'COMPLETED'"
+                <button class="btn btn-secondary" *ngIf="sprint.status !== 'ACTIVE' && sprint.status !== 'COMPLETED'"
                     (click)="startSprint(sprint)">Start</button>
-                <button class="btn-secondary" *ngIf="sprint.status === 'ACTIVE'"
+                <button class="btn btn-secondary" *ngIf="sprint.status === 'ACTIVE'"
                     (click)="endSprint(sprint)">End</button>
-                <button class="btn-danger" (click)="deleteSprint(sprint)">Delete</button>
+                <button class="btn btn-danger" (click)="deleteSprint(sprint)">Delete</button>
             </div>
         </div>
     </div>
 
     <div class="empty-state" *ngIf="!loading && sprints.length === 0">
         <p>No sprints found.</p>
-        <button class="btn-primary" *appHasRole="'FOUNDER'" (click)="createSprint()">Create First Sprint</button>
+        <button class="btn btn-primary" *appHasRole="'FOUNDER'" (click)="createSprint()">Create First Sprint</button>
     </div>
 </div>

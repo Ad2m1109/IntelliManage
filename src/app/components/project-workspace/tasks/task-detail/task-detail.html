@@ -5,7 +5,7 @@
                 <span class="task-id">#{{ task.id }}</span>
                 <h2>{{ task.title }}</h2>
             </div>
-            <button class="btn-close" (click)="close.emit()">×</button>
+            <button class="btn btn-secondary btn-sm" (click)="close.emit()">×</button>
         </div>
 
         <div class="panel-content">
@@ -59,7 +59,7 @@
                     <div *ngIf="activeTab === 'comments'" class="comments-tab">
                         <div class="comment-input">
                             <textarea [(ngModel)]="newCommentContent" placeholder="Write a comment..."></textarea>
-                            <button class="btn-primary" [disabled]="!newCommentContent.trim()"
+                            <button class="btn btn-primary" [disabled]="!newCommentContent.trim()"
                                 (click)="addComment()">Post Comment</button>
                         </div>
                         <div class="comments-list">
@@ -101,7 +101,7 @@
                                     <span class="meta">{{ attachment.uploadedByName }} • {{ attachment.uploadedAt |
                                         date:'short' }}</span>
                                 </div>
-                                <button class="btn-delete-file" (click)="deleteAttachment(attachment.id)">×</button>
+                                <button class="btn btn-danger btn-sm" (click)="deleteAttachment(attachment.id)">×</button>
                             </div>
                             <div *ngIf="attachments.length === 0" class="empty-state">
                                 No attachments yet.

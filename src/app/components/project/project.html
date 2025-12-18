@@ -1,7 +1,7 @@
 <div class="project-list-container">
     <div class="header">
         <h2>My Projects</h2>
-        <button class="btn-primary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">+ New Project</button>
+        <button class="btn btn-primary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">+ New Project</button>
     </div>
     
     <div *ngIf="isLoading" class="loading-state">
@@ -10,7 +10,7 @@
 
     <div *ngIf="!isLoading && projects.length === 0" class="empty-state">
         <p>No projects found.</p>
-        <button class="btn-secondary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">Create Your First Project</button>
+        <button class="btn btn-secondary" *ngIf="isFounder" [routerLink]="[roleBasePath + '/projects/new']">Create Your First Project</button>
     </div>
     
     <div class="projects-grid" *ngIf="!isLoading && projects.length > 0">
