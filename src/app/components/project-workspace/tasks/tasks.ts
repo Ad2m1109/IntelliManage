@@ -75,7 +75,11 @@ export class ProjectTasksComponent implements OnInit {
             this.projectState.selectedProject$.subscribe(project => {
                 if (project) {
                     this.selectedProjectId = project.id;
-                    this.loadInitialTasks();
+                    if (!this.isFounder) {
+                        this.toggleEmployeeView('mine'); // Explicitly set to 'mine' for employees
+                    } else {
+                        this.loadInitialTasks(); // Founders still use loadInitialTasks for their default view
+                    }
                     if (this.isFounder) {
                         this.loadMembersForFilter(project.id);
                     }
@@ -156,7 +160,9 @@ export class ProjectTasksComponent implements OnInit {
                 this.tasks = data;
                 this.groupTasksIntoKanbanColumns(data);
                 this.loading = false;
+                console.log(`Toggling employee view to: ${view}`);
                 console.log('--- Tasks Loaded (Employee View Toggle) ---');
+                console.log('Received data:', data);
                 data.forEach(task => {
                     console.log(`Task ID: ${task.id}, Assignee ID: ${task.assignee?.id}, Current User ID: ${this.authService.getCurrentUser()?.id}`);
                 });
