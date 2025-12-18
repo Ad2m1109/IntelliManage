@@ -5,7 +5,7 @@
             <h3>Overall Progress</h3>
             <div class="progress-circle-container">
                 <div class="progress-circle" [style.--progress]="stats.overallProgress + '%'">
-                    <span class="progress-value">{{ stats.overallProgress }}%</span>
+                    <span class="progress-value">{{ stats.overallProgress | number:'1.0-2' }}%</span>
                 </div>
             </div>
             <p class="card-footer">Project is on track</p>
@@ -21,7 +21,7 @@
                     <div class="progress-bar">
                         <div class="progress-fill" [style.width]="stats.activeSprint.progress + '%'"></div>
                     </div>
-                    <span>{{ stats.activeSprint.progress }}%</span>
+                    <span>{{ stats.activeSprint.progress | number:'1.0-2' }}%</span>
                 </div>
                 <p class="sprint-deadline">Ends: {{ stats.activeSprint.endDate | date }}</p>
             </div>
