@@ -50,7 +50,7 @@
                 <div class="kanban-tasks" [id]="status" cdkDropList [cdkDropListData]="kanbanColumns[status]"
                     (cdkDropListDropped)="drop($event)">
                     <div class="task-card kanban-card" *ngFor="let task of kanbanColumns[status]"
-                        [cdkDragDisabled]="!isFounder && task.assignee?.id !== authService.getCurrentUser()?.id" cdkDrag
+                        [cdkDragDisabled]="!isFounder && task.assigneeId !== authService.getCurrentUser()?.id" cdkDrag
                         (click)="openTaskDetail(task)">
                         <div class="task-header">
                             <h3>{{ task.title }}</h3>

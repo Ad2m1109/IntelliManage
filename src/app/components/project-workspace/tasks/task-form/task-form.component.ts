@@ -56,8 +56,8 @@ export class TaskFormComponent implements OnInit, OnDestroy {
       description: [this.task?.description || ''],
       status: [this.task?.status || TaskStatus.PLANNED, Validators.required],
       priority: [this.task?.priority || 'MEDIUM', Validators.required],
-      assigneeId: [this.task?.assignee?.id || null],
-      sprintId: [this.task?.sprint?.id || null],
+      assigneeId: [this.task?.assigneeId || null],
+      sprintId: [this.task?.sprintId || null],
     });
   }
 

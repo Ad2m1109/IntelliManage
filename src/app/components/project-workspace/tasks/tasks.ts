@@ -164,7 +164,7 @@ export class ProjectTasksComponent implements OnInit {
                 console.log('--- Tasks Loaded (Employee View Toggle) ---');
                 console.log('Received data:', data);
                 data.forEach(task => {
-                    console.log(`Task ID: ${task.id}, Assignee ID: ${task.assignee?.id}, Current User ID: ${this.authService.getCurrentUser()?.id}`);
+                    console.log(`Task ID: ${task.id}, Assignee ID: ${task.assigneeId}, Current User ID: ${this.authService.getCurrentUser()?.id}`);
                 });
                 console.log('------------------------------------------');
             },
@@ -212,7 +212,7 @@ export class ProjectTasksComponent implements OnInit {
             const newStatus = event.container.id as TaskStatus;
 
             // Permission check before updating backend
-            if (!this.isFounder && task.assignee?.id !== this.authService.getCurrentUser()?.id) {
+            if (!this.isFounder && task.assigneeId !== this.authService.getCurrentUser()?.id) {
                 console.warn('Employee can only move their own tasks.');
                 return; // Prevent drop
             }
