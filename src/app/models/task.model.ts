@@ -10,10 +10,16 @@ export interface Task {
     status: TaskStatus;
     priority: string;
     project?: Project;
+    projectId?: number;
+    projectName?: string;
     sprint?: Sprint;
+    sprintId?: number;
+    sprintName?: string;
     assignee?: User;
     assigneeId?: number;
+    assigneeName?: string;
     reporter?: User;
-    sprintId?: number;
+    reporterId?: number;
+    reporterName?: string;
     createdAt?: string;
 }

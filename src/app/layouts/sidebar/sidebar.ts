@@ -44,7 +44,6 @@ export class SidebarComponent implements OnInit {
     if (this.selectedProject) {
       this.menuItems = [
         { label: 'Dashboard', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/dashboard`, icon: '📊' },
-        { label: 'Tasks', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/tasks`, icon: '📋' },
         { label: 'Sprints', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/sprints`, icon: '🏃' },
         { label: 'Members', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/members`, icon: '👥' },
         { label: 'AI Analyst', route: `${this.roleBasePath}/projects/${this.selectedProject.id}/ai-analyst`, icon: '🤖' },

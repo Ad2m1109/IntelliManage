@@ -6,15 +6,17 @@ import { TaskService } from '../../../services/task.service';
 import { AuthService } from '../../../services/auth.service';
 import { Task } from '../../../models/task.model';
 import { TaskFormComponent } from './task-form/task-form.component';
+import { TaskDetailComponent } from './task-detail/task-detail';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, DragDropModule } from '@angular/cdk/drag-drop';
 import { TaskStatus } from '../../../models/task-status.enum';
 import { MemberService } from '../../../services/member.service';
 import { ProjectMember } from '../../../models/project-member.model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-project-tasks',
     standalone: true,
-    imports: [CommonModule, FormsModule, TaskFormComponent, DragDropModule],
+    imports: [CommonModule, FormsModule, TaskFormComponent, TaskDetailComponent, DragDropModule],
     templateUrl: './tasks.html',
     styleUrl: './tasks.css'
 })
@@ -28,6 +30,7 @@ export class ProjectTasksComponent implements OnInit {
     // State for the task form
     showTaskForm: boolean = false;
     taskToEdit: Task | null = null;
+    selectedTask: Task | null = null;
 
     // Kanban specific properties
     kanbanColumns: { [key: string]: Task[] } = {
@@ -41,6 +44,7 @@ export class ProjectTasksComponent implements OnInit {
     members: ProjectMember[] = [];
     filters: any = {
         assigneeId: null,
+        sprintId: null,
         status: null,
         priority: null,
         unassigned: false
@@ -53,26 +57,53 @@ export class ProjectTasksComponent implements OnInit {
         private taskService: TaskService,
         public authService: AuthService,
         private memberService: MemberService,
+        private route: ActivatedRoute,
+        private router: Router
     ) { }
 
     ngOnInit() {
         this.userRole = this.authService.getUserRole() || '';
         this.isFounder = this.userRole === 'FOUNDER';
 
-        this.projectState.selectedProject$.subscribe(project => {
-            if (project) {
-                this.selectedProjectId = project.id;
-                this.loadInitialTasks();
-                if (this.isFounder) {
-                    this.loadMembersForFilter(project.id);
-                }
+        this.route.params.subscribe(params => {
+            if (params['sprintId']) {
+                this.filters.sprintId = params['sprintId'] === 'backlog' ? -1 : +params['sprintId'];
+            } else {
+                this.filters.sprintId = null;
             }
+
+            this.projectState.selectedProject$.subscribe(project => {
+                if (project) {
+                    this.selectedProjectId = project.id;
+                    this.loadInitialTasks();
+                    if (this.isFounder) {
+                        this.loadMembersForFilter(project.id);
+                    }
+                }
+            });
         });
     }
 
     loadInitialTasks() {
         if (!this.selectedProjectId) return;
         this.loading = true;
+
+        // If we have a sprintId filter, use getFilteredTasks even for initial load
+        if (this.filters.sprintId !== null) {
+            this.taskService.getFilteredTasks(this.selectedProjectId, this.filters).subscribe({
+                next: (data) => {
+                    this.tasks = data;
+                    this.groupTasksIntoKanbanColumns(data);
+                    this.loading = false;
+                },
+                error: (err) => {
+                    console.error('Error loading tasks', err);
+                    this.loading = false;
+                }
+            });
+            return;
+        }
+
         const obs = this.isFounder
             ? this.taskService.getProjectTasks(this.selectedProjectId)
             : this.taskService.getMyTasks(this.selectedProjectId);
@@ -82,11 +113,6 @@ export class ProjectTasksComponent implements OnInit {
                 this.tasks = data;
                 this.groupTasksIntoKanbanColumns(data);
                 this.loading = false;
-                console.log('--- Tasks Loaded (Initial) ---');
-                data.forEach(task => {
-                    console.log(`Task ID: ${task.id}, Assignee ID: ${task.assignee?.id}, Current User ID: ${this.authService.getCurrentUser()?.id}`);
-                });
-                console.log('------------------------------');
             },
             error: (err) => {
                 console.error('Error loading tasks', err);
@@ -230,5 +256,18 @@ export class ProjectTasksComponent implements OnInit {
     handleCancel() {
         this.showTaskForm = false;
         this.taskToEdit = null;
+    }
+
+    backToSprints() {
+        const userRole = this.authService.isFounder() ? 'founder' : 'employee';
+        this.router.navigate([`/${userRole}/projects/${this.selectedProjectId}/sprints`]);
+    }
+
+    openTaskDetail(task: Task) {
+        this.selectedTask = task;
+    }
+
+    closeTaskDetail() {
+        this.selectedTask = null;
     }
 }

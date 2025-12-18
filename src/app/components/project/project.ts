@@ -43,6 +43,6 @@ export class ProjectComponent implements OnInit {
   }
 
   navigateToProject(projectId: number) {
-    this.router.navigate([`${this.roleBasePath}/projects`, projectId, 'tasks']);
+    this.router.navigate([`${this.roleBasePath}/projects`, projectId, 'dashboard']);
   }
 }

@@ -11,6 +11,36 @@
     border-bottom: 1px solid var(--border-color);
 }
 
+.header-title-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-icon-back {
+    background: #f0f4f8;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--primary-color);
+}
+
+.btn-icon-back:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.back-arrow {
+    font-size: 20px;
+    font-weight: bold;
+}
+
 .header h2 {
     margin: 0;
     font-size: 22px;
@@ -56,7 +86,7 @@
 .view-toggle button.active {
     background: var(--surface-color);
     color: var(--primary-color);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .filter-bar {
@@ -70,7 +100,8 @@
     border: 1px solid var(--border-color);
 }
 
-.filter-bar select, .filter-bar input {
+.filter-bar select,
+.filter-bar input {
     padding: 8px 12px;
     border-radius: 6px;
     border: 1px solid var(--border-color);
@@ -110,6 +141,7 @@
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 16px;
+    cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }

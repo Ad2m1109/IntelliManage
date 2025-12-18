@@ -1,0 +1,138 @@
+<div class="task-detail-overlay" (click)="close.emit()">
+    <div class="task-detail-panel" (click)="$event.stopPropagation()">
+        <div class="panel-header">
+            <div class="header-main">
+                <span class="task-id">#{{ task.id }}</span>
+                <h2>{{ task.title }}</h2>
+            </div>
+            <button class="btn-close" (click)="close.emit()">×</button>
+        </div>
+
+        <div class="panel-content">
+            <div class="task-info-grid">
+                <div class="info-item">
+                    <label>Status</label>
+                    <span class="badge status" [class]="task.status.toLowerCase()">{{ task.status.replace('_', ' ')
+                        }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Priority</label>
+                    <span class="badge priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Assignee</label>
+                    <div class="user-info">
+                        <div class="avatar">{{ task.assigneeName?.charAt(0) || '?' }}</div>
+                        <span>{{ task.assigneeName || 'Unassigned' }}</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <label>Reporter</label>
+                    <div class="user-info">
+                        <div class="avatar">{{ task.reporterName?.charAt(0) || '?' }}</div>
+                        <span>{{ task.reporterName }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description-section">
+                <label>Description</label>
+                <p *ngIf="task.description">{{ task.description }}</p>
+                <p *ngIf="!task.description" class="empty-text">No description provided.</p>
+            </div>
+
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button [class.active]="activeTab === 'comments'" (click)="activeTab = 'comments'">
+                        Comments <span>({{ comments.length }})</span>
+                    </button>
+                    <button [class.active]="activeTab === 'attachments'" (click)="activeTab = 'attachments'">
+                        Attachments <span>({{ attachments.length }})</span>
+                    </button>
+                    <button [class.active]="activeTab === 'history'" (click)="activeTab = 'history'">
+                        History
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Comments Tab -->
+                    <div *ngIf="activeTab === 'comments'" class="comments-tab">
+                        <div class="comment-input">
+                            <textarea [(ngModel)]="newCommentContent" placeholder="Write a comment..."></textarea>
+                            <button class="btn-primary" [disabled]="!newCommentContent.trim()"
+                                (click)="addComment()">Post Comment</button>
+                        </div>
+                        <div class="comments-list">
+                            <div class="comment-item" *ngFor="let comment of comments">
+                                <div class="comment-header">
+                                    <div class="user-info">
+                                        <div class="avatar small">{{ comment.userName.charAt(0) }}</div>
+                                        <span class="user-name">{{ comment.userName }}</span>
+                                    </div>
+                                    <span class="date">{{ comment.createdAt | date:'short' }}</span>
+                                </div>
+                                <div class="comment-body">
+                                    {{ comment.content }}
+                                </div>
+                                <div class="comment-actions"
+                                    *ngIf="authService.getCurrentUser()?.id === comment.userId">
+                                    <button (click)="deleteComment(comment.id)">Delete</button>
+                                </div>
+                            </div>
+                            <div *ngIf="comments.length === 0" class="empty-state">
+                                No comments yet. Start the discussion!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attachments Tab -->
+                    <div *ngIf="activeTab === 'attachments'" class="attachments-tab">
+                        <div class="upload-section">
+                            <input type="file" id="fileUpload" (change)="onFileSelected($event)" hidden>
+                            <label for="fileUpload" class="btn-upload">
+                                <span>+</span> Upload File
+                            </label>
+                        </div>
+                        <div class="attachments-list">
+                            <div class="attachment-item" *ngFor="let attachment of attachments">
+                                <div class="file-icon">📄</div>
+                                <div class="file-info">
+                                    <a [href]="attachment.fileUrl" target="_blank">{{ attachment.fileName }}</a>
+                                    <span class="meta">{{ attachment.uploadedByName }} • {{ attachment.uploadedAt |
+                                        date:'short' }}</span>
+                                </div>
+                                <button class="btn-delete-file" (click)="deleteAttachment(attachment.id)">×</button>
+                            </div>
+                            <div *ngIf="attachments.length === 0" class="empty-state">
+                                No attachments yet.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Tab -->
+                    <div *ngIf="activeTab === 'history'" class="history-tab">
+                        <div class="activities-list">
+                            <div class="activity-item" *ngFor="let activity of activities">
+                                <div class="activity-dot"></div>
+                                <div class="activity-content">
+                                    <div class="activity-text">
+                                        <strong>{{ activity.userName }}</strong>
+                                        {{ formatAction(activity.action) }}
+                                        <span class="change-detail" *ngIf="activity.oldValue || activity.newValue">
+                                            from <span class="old">{{ activity.oldValue || 'None' }}</span>
+                                            to <span class="new">{{ activity.newValue }}</span>
+                                        </span>
+                                    </div>
+                                    <span class="activity-date">{{ activity.createdAt | date:'short' }}</span>
+                                </div>
+                            </div>
+                            <div *ngIf="activities.length === 0" class="empty-state">
+                                No history recorded yet.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

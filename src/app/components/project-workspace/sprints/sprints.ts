@@ -4,6 +4,7 @@ import { ProjectStateService } from '../../../services/project-state.service';
 import { SprintService, Sprint } from '../../../services/sprint.service';
 import { AuthService } from '../../../services/auth.service';
 import { HasRoleDirective } from '../../../directives/has-role.directive';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-project-sprints',
@@ -20,8 +21,9 @@ export class ProjectSprintsComponent implements OnInit {
 
     constructor(
         private projectState: ProjectStateService,
-        private sprintService: SprintService
-        , private authService: AuthService
+        private sprintService: SprintService,
+        private authService: AuthService,
+        private router: Router
     ) { }
 
     ngOnInit() {
@@ -84,5 +86,15 @@ export class ProjectSprintsComponent implements OnInit {
             next: () => this.loadSprints(this.selectedProjectId!),
             error: (err) => console.error('Error deleting sprint', err)
         });
+    }
+
+    viewSprintTasks(sprintId: number) {
+        const userRole = this.authService.isFounder() ? 'founder' : 'employee';
+        this.router.navigate([`/${userRole}/projects/${this.selectedProjectId}/sprints/${sprintId}`]);
+    }
+
+    goToBacklog() {
+        const userRole = this.authService.isFounder() ? 'founder' : 'employee';
+        this.router.navigate([`/${userRole}/projects/${this.selectedProjectId}/sprints/backlog`]);
     }
 }

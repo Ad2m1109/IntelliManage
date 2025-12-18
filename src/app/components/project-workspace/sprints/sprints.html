@@ -4,8 +4,19 @@
         <button class="btn-primary" *appHasRole="'FOUNDER'" (click)="createSprint()">+ New Sprint</button>
     </div>
 
-    <div class="sprints-list" *ngIf="!loading && sprints.length > 0">
-        <div class="sprint-card" *ngFor="let sprint of sprints">
+    <div class="sprints-list" *ngIf="!loading">
+        <!-- Backlog Card -->
+        <div class="sprint-card backlog-card" (click)="goToBacklog()">
+            <div class="sprint-header">
+                <h3>Product Backlog</h3>
+                <span class="status planned">Backlog</span>
+            </div>
+            <p class="goal">Tasks not yet assigned to a sprint.</p>
+            <div class="view-tasks-hint">Click to view tasks →</div>
+        </div>
+
+        <!-- Sprint Cards -->
+        <div class="sprint-card" *ngFor="let sprint of sprints" (click)="viewSprintTasks(sprint.id)">
             <div class="sprint-header">
                 <h3>{{ sprint.name }}</h3>
                 <span class="status" [class]="sprint.status.toLowerCase()">{{ sprint.status }}</span>

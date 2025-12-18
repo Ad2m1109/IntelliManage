@@ -52,9 +52,9 @@ export const routes: Routes = [
                 children: [
                     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
                     { path: 'dashboard', loadComponent: () => import('./components/project-workspace/dashboard/dashboard').then(m => m.ProjectDashboardComponent) },
-                    { path: 'tasks', component: ProjectTasksComponent },
                     { path: 'members', component: ProjectMembersComponent },
                     { path: 'sprints', component: ProjectSprintsComponent },
+                    { path: 'sprints/:sprintId', component: ProjectTasksComponent },
                     { path: 'ai-analyst', component: AiAnalystComponent },
                 ]
             },
@@ -77,9 +77,9 @@ export const routes: Routes = [
                 children: [
                     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
                     { path: 'dashboard', loadComponent: () => import('./components/project-workspace/dashboard/dashboard').then(m => m.ProjectDashboardComponent) },
-                    { path: 'tasks', component: ProjectTasksComponent },
                     { path: 'members', component: ProjectMembersComponent },
                     { path: 'sprints', component: ProjectSprintsComponent },
+                    { path: 'sprints/:sprintId', component: ProjectTasksComponent },
                     { path: 'ai-analyst', component: AiAnalystComponent },
                 ]
             },

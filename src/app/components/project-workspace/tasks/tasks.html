@@ -1,6 +1,11 @@
 <div class="tasks-container">
     <div class="header">
-        <h2>Tasks</h2>
+        <div class="header-title-section">
+            <button class="btn-icon-back" (click)="backToSprints()" title="Back to Sprints">
+                <span class="back-arrow">←</span>
+            </button>
+            <h2>Tasks</h2>
+        </div>
         <div class="header-actions">
             <!-- Employee View Toggle -->
             <div *ngIf="!isFounder" class="view-toggle">
@@ -44,8 +49,9 @@
                 </div>
                 <div class="kanban-tasks" [id]="status" cdkDropList [cdkDropListData]="kanbanColumns[status]"
                     (cdkDropListDropped)="drop($event)">
-                    <div class="task-card kanban-card" *ngFor="let task of kanbanColumns[status]" 
-                         [cdkDragDisabled]="!isFounder && task.assignee?.id !== authService.getCurrentUser()?.id" cdkDrag>
+                    <div class="task-card kanban-card" *ngFor="let task of kanbanColumns[status]"
+                        [cdkDragDisabled]="!isFounder && task.assignee?.id !== authService.getCurrentUser()?.id" cdkDrag
+                        (click)="openTaskDetail(task)">
                         <div class="task-header">
                             <h3>{{ task.title }}</h3>
                         </div>
@@ -53,7 +59,8 @@
                         <div class="task-footer">
                             <span class="priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
                             <div class="task-actions" *ngIf="isFounder">
-                                <button class="btn-edit" (click)="editTask(task)">Edit</button>
+                                <button class="btn-edit"
+                                    (click)="editTask(task); $event.stopPropagation()">Edit</button>
                             </div>
                         </div>
                         <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
@@ -69,4 +76,8 @@
     <app-task-form *ngIf="showTaskForm" [task]="taskToEdit" (taskSubmitted)="handleTaskSubmitted($event)"
         (cancel)="handleCancel()">
     </app-task-form>
+
+    <app-task-detail *ngIf="selectedTask" [task]="selectedTask" (close)="closeTaskDetail()"
+        (taskUpdated)="loadInitialTasks()">
+    </app-task-detail>
 </div>
