@@ -2,19 +2,20 @@
     <div class="chat-header">
         <div class="header-title">
             <h2>AI Project Analyst</h2>
-            <button class="btn btn-primary" (click)="generateProjectInsights()" [disabled]="loading">
-                ✨ Generate Project Insights
-            </button>
         </div>
         <p>Ask me anything about project management or general questions.</p>
     </div>
 
     <div class="chat-messages">
-        <div class="message" *ngFor="let msg of messages"
+        <div class="message" *ngFor="let msg of messages; let i = index"
             [ngClass]="{'user-message': msg.sender === 'user', 'ai-message': msg.sender === 'ai'}">
             <div class="message-content">
                 <span class="sender-name">{{ msg.sender === 'user' ? 'You' : 'AI Analyst' }}</span>
                 <p>{{ msg.text }}</p>
+                <button *ngIf="!msg.saved" class="save-message-btn" (click)="saveMessageToBackend(msg)">
+                    <i class="fa fa-save"></i>
+                </button>
+                <span *ngIf="msg.saved" class="saved-indicator">Saved!</span>
             </div>
         </div>
         <div class="loading-indicator" *ngIf="loading">

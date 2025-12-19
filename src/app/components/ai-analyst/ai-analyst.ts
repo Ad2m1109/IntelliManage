@@ -2,17 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AiService } from '../../services/ai.service';
-import { ProjectStateService } from '../../services/project-state.service';
-import { TaskService } from '../../services/task.service';
-import { SprintService } from '../../services/sprint.service';
-import { forkJoin } from 'rxjs';
-import { NotificationService } from '../../services/notification.service'; // Import NotificationService
-import { HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorResponse
-
-interface ChatMessage {
-  text: string;
-  sender: 'user' | 'ai';
-}
+import { catchError, throwError } from 'rxjs';
+import { NotificationService } from '../../services/notification.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChatMessage, ChatLogRequest } from '../../models/ai-analysis.model'; // Import ChatMessage and ChatLogRequest
+import { AuthService } from '../../services/auth.service'; // Import AuthService
+import { ProjectStateService } from '../../services/project-state.service'; // Import ProjectStateService
 
 @Component({
   selector: 'app-ai-analyst',
@@ -28,119 +23,72 @@ export class AiAnalystComponent implements OnInit {
 
   constructor(
     private aiService: AiService,
-    private projectState: ProjectStateService,
-    private taskService: TaskService,
-    private sprintService: SprintService,
-    private notificationService: NotificationService // Inject NotificationService
+    private notificationService: NotificationService,
+    private authService: AuthService, // Inject AuthService
+    private projectStateService: ProjectStateService // Inject ProjectStateService
   ) { }
 
   ngOnInit() {
-    this.loadChatHistory();
-  }
-
-  loadChatHistory() {
-    this.aiService.getChatHistory().subscribe({
-      next: (history) => {
-        this.messages = history.map(log => ({
-          text: log.message,
-          sender: log.sender as 'user' | 'ai'
-        }));
-      },
-      error: (err: HttpErrorResponse) => {
-                this.notificationService.error(err.error?.message || 'Error loading chat history.');
-      }
-    });
+    // No chat history loaded from backend
   }
 
   sendMessage() {
     if (!this.userInput.trim()) return;
 
-    const userMessage = this.userInput;
-    this.messages.push({ text: userMessage, sender: 'user' });
+    const userMessage: ChatMessage = { text: this.userInput, sender: 'user' };
+    this.messages.push(userMessage);
     this.userInput = '';
     this.loading = true;
 
-    // 1. Save User Message
-    this.aiService.saveMessage(userMessage, 'user').subscribe({
-      error: (err: HttpErrorResponse) => {
-                this.notificationService.error(err.error?.message || 'Error saving user message.');
-      }
-    });
-
-    // 2. Call Gemini API
-    this.aiService.generateContent(userMessage).subscribe({
-      next: (response) => {
-        // Parse Gemini Response
-        const aiText = response.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI.';
-
-        this.messages.push({ text: aiText, sender: 'ai' });
+    // Call Gemini API directly
+    this.aiService.generateContent(userMessage.text).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this.notificationService.error(err.error?.message || 'Error communicating with AI Analyst.');
+        const errorMessage: ChatMessage = { text: 'Error communicating with AI Analyst.', sender: 'ai' };
+        this.messages.push(errorMessage);
         this.loading = false;
-
-        // 3. Save AI Response
-        this.aiService.saveMessage(aiText, 'ai').subscribe({
-          error: (err: HttpErrorResponse) => {
-                        this.notificationService.error(err.error?.message || 'Error saving AI message.');
-          }
-        });
-      },
-      error: (err: HttpErrorResponse) => {
-                this.notificationService.error(err.error?.message || 'Error communicating with AI Analyst.');
-        this.messages.push({ text: 'Error communicating with AI Analyst.', sender: 'ai' });
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: (response) => {
+        const aiText = response.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI.';
+        const aiMessage: ChatMessage = { text: aiText, sender: 'ai' };
+        this.messages.push(aiMessage);
         this.loading = false;
       }
     });
   }
 
-  generateProjectInsights() {
-    const project = this.projectState.getCurrentProject();
-    if (!project) return;
+  saveMessageToBackend(message: ChatMessage) {
+    const currentUser = this.authService.getCurrentUser();
+    const currentProject = this.projectStateService.getCurrentProject();
 
-    this.loading = true;
-    this.messages.push({ text: 'Generating project insights...', sender: 'user' });
+    if (!currentUser || !currentProject) {
+      this.notificationService.error('User or Project not found. Cannot save message.');
+      return;
+    }
 
-    forkJoin({
-      tasks: this.taskService.getProjectTasks(project.id),
-      sprints: this.sprintService.getProjectSprints(project.id)
-    }).subscribe({
-      next: (data) => {
-        const taskSummary = data.tasks.map(t => `- ${t.title} (${t.status}, ${t.priority})`).join('\n');
-        const sprintSummary = data.sprints.map(s => `- ${s.name} (${s.status}, Goal: ${s.goal})`).join('\n');
+    const chatLogRequest: ChatLogRequest = {
+      userId: currentUser.id,
+      projectId: currentProject.id,
+      content: message.text,
+      date: new Date().toISOString() // Use ISO string for date
+    };
 
-        const prompt = `
-          Analyze the following project data and provide:
-          1. A concise progress summary.
-          2. Risk detection (e.g., blocked tasks, overdue sprints).
-          3. Sprint health analysis.
-
-          Project: ${project.name}
-          Description: ${project.description}
-
-          Tasks:
-          ${taskSummary}
-
-          Sprints:
-          ${sprintSummary}
-        `;
-
-        this.aiService.generateContent(prompt).subscribe({
-          next: (response) => {
-            const aiText = response.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI.';
-            this.messages.push({ text: aiText, sender: 'ai' });
-            this.loading = false;
-            this.aiService.saveMessage(aiText, 'ai').subscribe();
-          },
-          error: (err: HttpErrorResponse) => {
-                        this.notificationService.error(err.error?.message || 'Error generating insights.');
-            this.messages.push({ text: 'Error generating insights.', sender: 'ai' });
-            this.loading = false;
-          }
-        });
-      },
-      error: (err: HttpErrorResponse) => {
-                this.notificationService.error(err.error?.message || 'Error fetching project data.');
-        this.loading = false;
+    this.aiService.saveChatLog(chatLogRequest).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this.notificationService.error(err.error?.message || 'Error saving message to backend.');
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: () => {
+        this.notificationService.success('Message saved successfully!');
+        // Mark the message as saved in the frontend
+        const index = this.messages.indexOf(message);
+        if (index > -1) {
+          this.messages[index].saved = true;
+        }
       }
     });
   }
 }
-

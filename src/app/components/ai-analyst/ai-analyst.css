@@ -79,6 +79,44 @@
     opacity: 0.8;
 }
 
+/* Save button styles */
+.save-message-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: rgba(0, 0, 0, 0.4); /* Darker for contrast */
+    cursor: pointer;
+    font-size: 0.8em;
+    padding: 3px;
+    border-radius: 3px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.user-message .save-message-btn {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.save-message-btn:hover {
+    color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.user-message .save-message-btn:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.saved-indicator {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 0.7em;
+    color: #2ecc71; /* Green color for saved */
+    font-weight: bold;
+}
+
 .chat-input-area {
     display: flex;
     gap: 10px;

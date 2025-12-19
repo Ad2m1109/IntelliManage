@@ -28,7 +28,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           errorMessage = `Error ${error.status}: ${error.message}`;
         }
       }
-      notificationService.error(errorMessage);
+      notificationService.error(errorMessage); // Re-enabled
       return throwError(() => error);
     })
   );
