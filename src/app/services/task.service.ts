@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { config } from '../config';
 import { Task } from '../models/task.model';
+import { TaskFilters } from '../models/task-filters.model'; // Import TaskFilters
 
 
 import { HttpParams } from '@angular/common/http';
@@ -21,7 +22,7 @@ export class TaskService {
         return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks`);
     }
 
-    getFilteredTasks(projectId: number, filters: any): Observable<Task[]> {
+    getFilteredTasks(projectId: number, filters: TaskFilters): Observable<Task[]> {
         let params = new HttpParams();
         Object.keys(filters).forEach(key => {
             if (filters[key]) {

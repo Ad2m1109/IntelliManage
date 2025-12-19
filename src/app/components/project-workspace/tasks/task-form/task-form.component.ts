@@ -74,7 +74,9 @@ export class TaskFormComponent implements OnInit, OnDestroy {
             fullName: m.userName
           }));
         },
-        error: (err) => console.error('Error loading members', err),
+        error: (err) => {
+          /* Handle error */ // Consider a notification service
+        },
       });
     }
   }
@@ -85,7 +87,9 @@ export class TaskFormComponent implements OnInit, OnDestroy {
         next: (sprints) => {
           this.sprints = sprints;
         },
-        error: (err) => console.error('Error loading sprints', err),
+        error: (err) => {
+          /* Handle error */ // Consider a notification service
+        },
       });
     }
   }

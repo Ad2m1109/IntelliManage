@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { SprintFormComponent } from './sprint-form/sprint-form.component';
 import { SearchService } from '../../../services/search.service'; // Import SearchService
 import { Subscription } from 'rxjs'; // Import Subscription
+import { DialogService } from '../../../services/dialog.service'; // Import DialogService
+
 
 @Component({
     selector: 'app-project-sprints',
@@ -24,19 +26,21 @@ export class ProjectSprintsComponent implements OnInit, OnDestroy { // Implement
 
     showSprintForm = false;
     sprintToEdit: Sprint | null = null;
-    private searchSubscription: Subscription = new Subscription(); // To manage subscription
+    private searchSubscription: Subscription = new Subscription(); // To manage search term subscription
+    private projectStateSub: Subscription = new Subscription(); // To manage project state subscription
 
     constructor(
         private projectState: ProjectStateService,
         private sprintService: SprintService,
         private authService: AuthService,
         private router: Router,
-        private searchService: SearchService // Inject SearchService
+        private searchService: SearchService, // Inject SearchService
+        private dialogService: DialogService // Inject DialogService
     ) { }
 
     ngOnInit() {
         this.isFounder = this.authService.isFounder();
-        this.projectState.selectedProject$.subscribe(project => {
+        this.projectStateSub = this.projectState.selectedProject$.subscribe(project => {
             if (project) {
                 this.selectedProjectId = project.id;
                 this.loadSprints(project.id);
@@ -51,6 +55,7 @@ export class ProjectSprintsComponent implements OnInit, OnDestroy { // Implement
 
     ngOnDestroy(): void {
         this.searchSubscription.unsubscribe(); // Unsubscribe to prevent memory leaks
+        this.projectStateSub.unsubscribe(); // Unsubscribe from project state
     }
 
     loadSprints(projectId: number) {
@@ -63,7 +68,7 @@ export class ProjectSprintsComponent implements OnInit, OnDestroy { // Implement
                 this.filterSprints(this.searchService.getSearchTerm()); // Apply current search term
             },
             error: (err) => {
-                console.error('Error loading sprints', err);
+                /* Handle error */ // Consider a notification service
                 this.loading = false;
             }
         });
@@ -78,7 +83,6 @@ export class ProjectSprintsComponent implements OnInit, OnDestroy { // Implement
         this.filteredSprints = this.allSprints.filter(sprint =>
             sprint.name.toLowerCase().includes(lowerCaseSearchTerm) ||
             (sprint.goal && sprint.goal.toLowerCase().includes(lowerCaseSearchTerm))
-            // Add more fields to search if needed
         );
     }
 
@@ -107,7 +111,9 @@ export class ProjectSprintsComponent implements OnInit, OnDestroy { // Implement
                 this.sprintToEdit = null;
                 this.loadSprints(this.selectedProjectId!);
             },
-            error: (err) => console.error('Error submitting sprint', err)
+            error: (err) => {
+                /* Handle error */ // Consider a notification service
+            }
         });
     }
 
@@ -118,11 +124,20 @@ export class ProjectSprintsComponent implements OnInit, OnDestroy { // Implement
 
     deleteSprint(sprint: Sprint) {
         if (!this.isFounder) return;
-        const ok = window.confirm('Delete sprint?');
-        if (!ok) return;
-        this.sprintService.deleteSprint(sprint.id).subscribe({
-            next: () => this.loadSprints(this.selectedProjectId!),
-            error: (err) => console.error('Error deleting sprint', err)
+        this.dialogService.open({
+            title: 'Delete Sprint',
+            message: `Are you sure you want to delete the sprint "${sprint.name}"? This action cannot be undone.`,
+            confirmText: 'Delete',
+            cancelText: 'Cancel'
+        }).afterClosed.subscribe(result => {
+            if (result) {
+                this.sprintService.deleteSprint(sprint.id).subscribe({
+                    next: () => this.loadSprints(this.selectedProjectId!),
+                    error: (err) => {
+                        /* Handle error */ // Consider a notification service
+                    }
+                });
+            }
         });
     }
 

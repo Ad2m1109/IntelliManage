@@ -14,6 +14,7 @@ import { ProjectMember } from '../../../models/project-member.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../../../services/search.service'; // Import SearchService
 import { Subscription } from 'rxjs'; // Import Subscription
+import { TaskFilters } from '../../../models/task-filters.model'; // Import TaskFilters
 
 @Component({
     selector: 'app-project-tasks',
@@ -45,7 +46,7 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
 
     // Filter properties
     members: ProjectMember[] = [];
-    filters: any = {
+    filters: TaskFilters = {
         assigneeId: null,
         sprintId: null,
         status: null,
@@ -53,7 +54,9 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
         unassigned: false
     };
     employeeView: 'mine' | 'all' = 'mine';
-    private searchSubscription: Subscription = new Subscription(); // To manage subscription
+    private searchSubscription: Subscription = new Subscription(); // To manage search term subscription
+    private routeSub: Subscription = new Subscription(); // To manage route params subscription
+    private projectStateSub: Subscription = new Subscription(); // To manage project state subscription
 
 
     constructor(
@@ -70,14 +73,14 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
         this.userRole = this.authService.getUserRole() || '';
         this.isFounder = this.userRole === 'FOUNDER';
 
-        this.route.params.subscribe(params => {
+        this.routeSub = this.route.params.subscribe(params => {
             if (params['sprintId']) {
                 this.filters.sprintId = params['sprintId'] === 'backlog' ? -1 : +params['sprintId'];
             } else {
                 this.filters.sprintId = null;
             }
 
-            this.projectState.selectedProject$.subscribe(project => {
+            this.projectStateSub = this.projectState.selectedProject$.subscribe(project => {
                 if (project) {
                     this.selectedProjectId = project.id;
                     if (!this.isFounder) {
@@ -100,6 +103,8 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
 
     ngOnDestroy(): void {
         this.searchSubscription.unsubscribe(); // Unsubscribe to prevent memory leaks
+        this.routeSub.unsubscribe(); // Unsubscribe from route params
+        this.projectStateSub.unsubscribe(); // Unsubscribe from project state
     }
 
     loadInitialTasks() {
@@ -135,7 +140,7 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
                 this.loading = false;
             },
             error: (err) => {
-                console.error('Error loading tasks', err);
+                /* Handle error */ // Consider a notification service
                 this.loading = false;
             }
         });
@@ -158,7 +163,7 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
                 this.loading = false;
             },
             error: (err) => {
-                console.error('Error applying filters', err);
+                /* Handle error */ // Consider a notification service
                 this.loading = false;
             }
         });
@@ -177,16 +182,9 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
             );
         }
 
-        // Apply existing filters (assignee, sprint, status, priority, unassigned)
-        // Note: The existing `filters` object is already applied when `getFilteredTasks` is called.
-        // This `applyAllFilters` method is primarily for client-side search term filtering
-        // on top of the already fetched (potentially backend-filtered) `allTasks`.
-        // If `allTasks` already reflects backend filters, no need to re-apply them here.
-        // If `allTasks` is truly *all* tasks, then the `filters` logic would need to be
-        // re-implemented here for client-side filtering.
-        // For now, assuming `allTasks` comes from `getFilteredTasks` or `getProjectTasks/getMyTasks`
-        // which already respect `this.filters` (except for search term).
-
+        // The `allTasks` array should already reflect any backend filters (like sprintId, assigneeId, etc.)
+        // applied during the data fetching (`loadInitialTasks`, `applyFilters`, `toggleEmployeeView`).
+        // This `applyAllFilters` method then applies the client-side search term on top of that.
         this.filteredTasks = tempTasks;
         this.groupTasksIntoKanbanColumns(this.filteredTasks);
     }
@@ -205,16 +203,9 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
                 this.allTasks = data;
                 this.applyAllFilters(); // Apply search term after loading
                 this.loading = false;
-                console.log(`Toggling employee view to: ${view}`);
-                console.log('--- Tasks Loaded (Employee View Toggle) ---');
-                console.log('Received data:', data);
-                data.forEach(task => {
-                    console.log(`Task ID: ${task.id}, Assignee ID: ${task.assigneeId}, Current User ID: ${this.authService.getCurrentUser()?.id}`);
-                });
-                console.log('------------------------------------------');
             },
             error: (err) => {
-                console.error('Error switching view', err);
+                /* Handle error */ // Consider a notification service
                 this.loading = false;
             }
         });
@@ -258,7 +249,7 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
 
             // Permission check before updating backend
             if (!this.isFounder && task.assigneeId !== this.authService.getCurrentUser()?.id) {
-                console.warn('Employee can only move their own tasks.');
+                /* Handle warning */ // Consider a notification service
                 return; // Prevent drop
             }
 
@@ -281,7 +272,7 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
                 if (successCallback) successCallback();
             },
             error: (err) => {
-                console.error('Error updating task status:', err);
+                /* Handle error */ // Consider a notification service
                 this.loadInitialTasks(); // Revert UI on error
             }
         });
@@ -300,7 +291,9 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
                 this.taskToEdit = null;
                 this.loadInitialTasks();
             },
-            error: (err) => console.error('Error submitting task', err)
+            error: (err) => {
+                /* Handle error */ // Consider a notification service
+            }
         });
     }
 

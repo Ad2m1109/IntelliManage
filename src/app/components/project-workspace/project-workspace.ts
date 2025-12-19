@@ -5,6 +5,8 @@ import { ProjectService } from '../../services/project.service';
 import { ProjectStateService } from '../../services/project-state.service';
 import { Project } from '../../models/project.model';
 import { Subscription } from 'rxjs';
+import { NotificationService } from '../../services/notification.service'; // Import NotificationService
+import { HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorResponse
 
 @Component({
     selector: 'app-project-workspace',
@@ -22,7 +24,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
         private projectService: ProjectService,
-        private projectState: ProjectStateService
+        private projectState: ProjectStateService,
+        private notificationService: NotificationService // Inject NotificationService
     ) { }
 
     ngOnInit() {
@@ -42,8 +45,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
                 this.projectState.setSelectedProject(project);
                 this.loading = false;
             },
-            error: (err) => {
-                console.error('Error loading project', err);
+            error: (err: HttpErrorResponse) => {
+                this.notificationService.error(err.error?.message || 'Failed to load project.');
                 this.error = 'Failed to load project';
                 this.loading = false;
             }

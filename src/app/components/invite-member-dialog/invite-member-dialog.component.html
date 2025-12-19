@@ -1,0 +1,6 @@
+<p>{{ message }}</p>
+<input type="email" [(ngModel)]="email" placeholder="Member's email address" class="dialog-input">
+<div class="dialog-actions">
+    <button class="btn btn-secondary" (click)="onCancel()">{{ cancelText }}</button>
+    <button class="btn btn-primary" (click)="onInvite()">{{ confirmText }}</button>
+</div>

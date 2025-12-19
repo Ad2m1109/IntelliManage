@@ -17,6 +17,21 @@
             <div class="sprint-info" *ngIf="stats.activeSprint; else noSprint">
                 <h4 class="sprint-name">{{ stats.activeSprint.name }}</h4>
                 <p class="sprint-goal">{{ stats.activeSprint.goal }}</p>
+
+                <div class="active-tasks-list" *ngIf="stats.activeSprint.tasks && stats.activeSprint.tasks.length > 0">
+                    <h5>Current Tasks</h5>
+                    <div class="task-item" *ngFor="let task of stats.activeSprint.tasks">
+                        <div class="task-header">
+                            <span class="task-title">{{ task.title }}</span>
+                            <span class="task-status" [class]="task.status.toLowerCase()">{{ task.status }}</span>
+                        </div>
+                        <div class="task-meta">
+                            <span class="task-assignee" *ngIf="task.assigneeName">👤 {{ task.assigneeName }}</span>
+                            <span class="task-priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="sprint-progress">
                     <div class="progress-bar">
                         <div class="progress-fill" [style.width]="stats.activeSprint.progress + '%'"></div>

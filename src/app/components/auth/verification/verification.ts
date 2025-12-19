@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-verification',
@@ -11,7 +12,7 @@ import { AuthService } from '../../../services/auth.service';
     templateUrl: './verification.html',
     styleUrl: './verification.css',
 })
-export class VerificationComponent implements OnInit, AfterViewInit {
+export class VerificationComponent implements OnInit, AfterViewInit, OnDestroy { // Implement OnDestroy
     email: string = '';
     code: string[] = ['', '', '', '', '', ''];
     loading: boolean = false;
@@ -19,7 +20,8 @@ export class VerificationComponent implements OnInit, AfterViewInit {
     success: string = '';
     resendDisabled: boolean = false;
     countdown: number = 60;
-    timer: any;
+    timer: any = null;
+    private routeSub: Subscription = new Subscription(); // To manage route params subscription
 
     @ViewChildren('codeInput') codeInputs!: QueryList<ElementRef>;
 
@@ -30,7 +32,7 @@ export class VerificationComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit() {
-        this.route.queryParams.subscribe(params => {
+        this.routeSub = this.route.queryParams.subscribe(params => {
             this.email = params['email'];
             if (!this.email) {
                 this.router.navigate(['/auth/login']);
@@ -45,8 +47,15 @@ export class VerificationComponent implements OnInit, AfterViewInit {
         }, 0);
     }
 
-    onInput(event: any, index: number) {
-        const input = event.target;
+    ngOnDestroy(): void {
+        this.routeSub.unsubscribe(); // Unsubscribe from route params
+        if (this.timer) {
+            clearInterval(this.timer); // Clear interval to prevent memory leaks
+        }
+    }
+
+    onInput(event: Event, index: number) {
+        const input = event.target as HTMLInputElement;
         const value = input.value;
 
         if (value && index < 5) {
@@ -58,7 +67,7 @@ export class VerificationComponent implements OnInit, AfterViewInit {
         }
     }
 
-    onKeyDown(event: any, index: number) {
+    onKeyDown(event: KeyboardEvent, index: number) {
         if (event.key === 'Backspace' && !this.code[index] && index > 0) {
             this.codeInputs.toArray()[index - 1].nativeElement.focus();
         }

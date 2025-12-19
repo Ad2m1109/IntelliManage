@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { RoleType } from '../../../models/role-type.enum';
 import { config } from '../../../config';
+import { GoogleCredentialResponse } from '../../../models/google-credential-response.model'; // Import GoogleCredentialResponse
 
 declare var google: any;
 
@@ -47,7 +48,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     if (typeof google !== 'undefined') {
       google.accounts.id.initialize({
         client_id: config.googleClientId,
-        callback: (response: any) => this.handleGoogleLogin(response)
+        callback: (response: GoogleCredentialResponse) => this.handleGoogleLogin(response)
       });
 
       google.accounts.id.renderButton(
@@ -57,7 +58,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private handleGoogleLogin(response: any) {
+  private handleGoogleLogin(response: GoogleCredentialResponse) {
     this.loading = true;
     this.authService.googleLogin(response.credential).subscribe({
       next: () => {
@@ -112,11 +113,11 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       roleType: this.roleType
     }).subscribe({
       next: (response) => {
-        console.log('Registration successful:', response.message);
+        // console.log('Registration successful:', response.message); // Consider a notification service
         this.router.navigate(['/auth/verify-email'], { queryParams: { email: this.email } });
       },
       error: (err) => {
-        console.error('Registration error:', err);
+        /* Handle error */ // Consider a notification service
         this.error = err.error?.message || err.error || 'Registration failed. Please try again.';
         this.loading = false;
       },

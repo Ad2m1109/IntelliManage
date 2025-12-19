@@ -59,7 +59,9 @@ export class TaskDetailComponent implements OnInit {
                 this.comments.unshift(comment);
                 this.newCommentContent = '';
             },
-            error: (err) => console.error('Error adding comment', err)
+            error: (err) => {
+                /* Handle error */ // Consider a notification service
+            }
         });
     }
 
@@ -71,8 +73,8 @@ export class TaskDetailComponent implements OnInit {
         }
     }
 
-    onFileSelected(event: any) {
-        const file = event.target.files[0];
+    onFileSelected(event: Event) {
+        const file = (event.target as HTMLInputElement).files?.[0];
         if (file) {
             // Mock upload for now
             const mockAttachment: Partial<Attachment> = {
@@ -86,7 +88,9 @@ export class TaskDetailComponent implements OnInit {
                 next: (attachment) => {
                     this.attachments.unshift(attachment);
                 },
-                error: (err) => console.error('Error uploading attachment', err)
+                error: (err) => {
+                    /* Handle error */ // Consider a notification service
+                }
             });
         }
     }

@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { InvitationService } from '../../services/invitation.service';
 import { ProjectInvitation } from '../../models/invitation.model';
 import { HasRoleDirective } from '../../directives/has-role.directive';
+import { HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorResponse
+import { NotificationService } from '../../services/notification.service'; // Import NotificationService
 
 @Component({
     selector: 'app-invitations',
@@ -16,41 +18,49 @@ export class InvitationsComponent implements OnInit {
     invitations: ProjectInvitation[] = [];
     loading = false;
 
-    constructor(private invitationService: InvitationService) { }
+    constructor(
+        private invitationService: InvitationService,
+        private notificationService: NotificationService // Inject NotificationService
+    ) { }
 
     ngOnInit() {
         this.loadInvitations();
     }
 
     loadInvitations() {
-        this.loading = true;
         this.invitationService.getMyInvitations().subscribe({
-            next: (data) => {
+            next: (data: ProjectInvitation[]) => { // Explicitly type data
                 this.invitations = data;
                 this.loading = false;
             },
-            error: (err) => {
-                console.error('Error loading invitations', err);
+            error: (err: HttpErrorResponse) => { // Explicitly type err
+                this.notificationService.error(err.error?.message || 'Error loading invitations.');
                 this.loading = false;
             }
         });
     }
 
-    acceptInvitation(invitationId: number) {
-        this.invitationService.acceptInvitation(invitationId).subscribe({
+    acceptInvitation(id: number) {
+        this.invitationService.acceptInvitation(id).subscribe({
             next: () => {
-                this.loadInvitations(); // Refresh list
+                this.loadInvitations();
+                this.notificationService.success('Invitation accepted successfully!');
             },
-            error: (err) => console.error('Error accepting invitation', err)
+            error: (err: HttpErrorResponse) => { // Explicitly type err
+                this.notificationService.error(err.error?.message || 'Error accepting invitation.');
+            }
         });
     }
 
-    rejectInvitation(invitationId: number) {
-        this.invitationService.rejectInvitation(invitationId).subscribe({
+    rejectInvitation(id: number) {
+        this.invitationService.rejectInvitation(id).subscribe({
             next: () => {
-                this.loadInvitations(); // Refresh list
+                this.loadInvitations();
+                this.notificationService.info('Invitation rejected.');
             },
-            error: (err) => console.error('Error rejecting invitation', err)
+            error: (err: HttpErrorResponse) => { // Explicitly type err
+                this.notificationService.error(err.error?.message || 'Error rejecting invitation.');
+            }
         });
     }
 }

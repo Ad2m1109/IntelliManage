@@ -1,0 +1,4 @@
+<div *ngIf="currentNotification" class="notification-container" [ngClass]="getNotificationClass()">
+    <p>{{ currentNotification.message }}</p>
+    <button class="close-button" (click)="clearNotification()">×</button>
+</div>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { config } from '../../../config';
+import { GoogleCredentialResponse } from '../../../models/google-credential-response.model'; // Import GoogleCredentialResponse
 
 declare var google: any;
 
@@ -41,7 +42,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (typeof google !== 'undefined') {
       google.accounts.id.initialize({
         client_id: config.googleClientId,
-        callback: (response: any) => this.handleGoogleLogin(response)
+        callback: (response: GoogleCredentialResponse) => this.handleGoogleLogin(response)
       });
 
       google.accounts.id.renderButton(
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private handleGoogleLogin(response: any) {
+  private handleGoogleLogin(response: GoogleCredentialResponse) {
     this.loading = true;
     this.authService.googleLogin(response.credential).subscribe({
       next: () => {
@@ -90,7 +91,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
-        console.log('Login successful:', response.message);
+        // console.log('Login successful:', response.message); // Consider a notification service
 
         // Redirect based on user role
         const userRole = this.authService.getUserRole();
@@ -104,7 +105,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         }
       },
       error: (err) => {
-        console.error('Login error:', err);
+        /* Handle error */ // Consider a notification service
         this.error = err.error?.message || err.error || 'Invalid email or password';
         this.loading = false;
       },

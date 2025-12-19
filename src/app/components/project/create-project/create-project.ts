@@ -35,18 +35,16 @@ export class CreateProjectComponent {
             this.error = '';
 
             const payload = this.createForm.value;
-            console.log('Creating project with payload:', payload);
+            // console.log('Creating project with payload:', payload); // Consider a notification service
 
             this.projectService.createProject(payload).subscribe({
                 next: (response) => {
-                    console.log('Project created successfully:', response);
+                    // console.log('Project created successfully:', response); // Consider a notification service
                     // Only founders can create projects, so redirect to founder projects
                     this.router.navigate(['/founder/projects']);
                 },
                 error: (err) => {
-                    console.error('Project creation failed:', err);
-                    console.error('Error status:', err.status);
-                    console.error('Error response:', err.error);
+                    /* Handle error */ // Consider a notification service
                     this.error = err.error?.message || 'Failed to create project. Please try again.';
                     this.isLoading = false;
                 }

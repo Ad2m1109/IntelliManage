@@ -6,6 +6,8 @@ import { ProjectStateService } from '../../services/project-state.service';
 import { TaskService } from '../../services/task.service';
 import { SprintService } from '../../services/sprint.service';
 import { forkJoin } from 'rxjs';
+import { NotificationService } from '../../services/notification.service'; // Import NotificationService
+import { HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorResponse
 
 interface ChatMessage {
   text: string;
@@ -28,7 +30,8 @@ export class AiAnalystComponent implements OnInit {
     private aiService: AiService,
     private projectState: ProjectStateService,
     private taskService: TaskService,
-    private sprintService: SprintService
+    private sprintService: SprintService,
+    private notificationService: NotificationService // Inject NotificationService
   ) { }
 
   ngOnInit() {
@@ -43,7 +46,9 @@ export class AiAnalystComponent implements OnInit {
           sender: log.sender as 'user' | 'ai'
         }));
       },
-      error: (err) => console.error('Error loading chat history:', err)
+      error: (err: HttpErrorResponse) => {
+                this.notificationService.error(err.error?.message || 'Error loading chat history.');
+      }
     });
   }
 
@@ -57,7 +62,9 @@ export class AiAnalystComponent implements OnInit {
 
     // 1. Save User Message
     this.aiService.saveMessage(userMessage, 'user').subscribe({
-      error: (err) => console.error('Error saving user message:', err)
+      error: (err: HttpErrorResponse) => {
+                this.notificationService.error(err.error?.message || 'Error saving user message.');
+      }
     });
 
     // 2. Call Gemini API
@@ -71,11 +78,13 @@ export class AiAnalystComponent implements OnInit {
 
         // 3. Save AI Response
         this.aiService.saveMessage(aiText, 'ai').subscribe({
-          error: (err) => console.error('Error saving AI message:', err)
+          error: (err: HttpErrorResponse) => {
+                        this.notificationService.error(err.error?.message || 'Error saving AI message.');
+          }
         });
       },
-      error: (err) => {
-        console.error('AI Error:', err);
+      error: (err: HttpErrorResponse) => {
+                this.notificationService.error(err.error?.message || 'Error communicating with AI Analyst.');
         this.messages.push({ text: 'Error communicating with AI Analyst.', sender: 'ai' });
         this.loading = false;
       }
@@ -120,17 +129,18 @@ export class AiAnalystComponent implements OnInit {
             this.loading = false;
             this.aiService.saveMessage(aiText, 'ai').subscribe();
           },
-          error: (err) => {
-            console.error('AI Error:', err);
+          error: (err: HttpErrorResponse) => {
+                        this.notificationService.error(err.error?.message || 'Error generating insights.');
             this.messages.push({ text: 'Error generating insights.', sender: 'ai' });
             this.loading = false;
           }
         });
       },
-      error: (err) => {
-        console.error('Error fetching project data', err);
+      error: (err: HttpErrorResponse) => {
+                this.notificationService.error(err.error?.message || 'Error fetching project data.');
         this.loading = false;
       }
     });
   }
 }
+

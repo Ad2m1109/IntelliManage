@@ -4,12 +4,14 @@ import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../header/header';
 import { SidebarComponent } from '../sidebar/sidebar';
 import { AuthService } from '../../services/auth.service';
-import { SearchService } from '../../services/search.service'; // Import SearchService
+import { SearchService } from '../../services/search.service';
+import { DialogHostComponent } from '../../components/dialog-host/dialog-host.component'; // Import DialogHostComponent
+import { NotificationHostComponent } from '../../components/notification-host/notification-host.component'; // Import NotificationHostComponent
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterModule, HeaderComponent, SidebarComponent, DialogHostComponent, NotificationHostComponent], // Add DialogHostComponent and NotificationHostComponent
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })
@@ -18,7 +20,7 @@ export class MainLayoutComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private searchService: SearchService // Inject SearchService
+    private searchService: SearchService
   ) { }
 
   ngOnInit() {
@@ -26,6 +28,6 @@ export class MainLayoutComponent implements OnInit {
   }
 
   handleSearch(searchTerm: string) {
-    this.searchService.setSearchTerm(searchTerm); // Update the search term in the service
+    this.searchService.setSearchTerm(searchTerm);
   }
 }

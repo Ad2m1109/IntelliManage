@@ -39,7 +39,7 @@
                     <ul class="task-mini-list">
                         <li *ngFor="let task of sprint.tasks">
                             <span class="task-title">{{ task.title }}</span>
-                            <span class="task-status-badge" [class]="task.status?.toLowerCase()">{{ task.status
+                            <span class="task-status-badge" [class]="task.status.toLowerCase()">{{ task.status
                                 }}</span>
                         </li>
                     </ul>

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorResponse
+import { ApiResponse } from '../../../models/api-response.model'; // Import ApiResponse
 
 @Component({
   selector: 'app-forgot-password',
@@ -30,7 +32,7 @@ export class ForgotPasswordComponent {
     this.isError = false;
 
     this.authService.forgotPassword(this.email).subscribe({
-      next: (response: any) => {
+      next: (response: ApiResponse) => {
         this.isLoading = false;
         this.message = response.message;
         // Redirect to reset password after a short delay
@@ -38,7 +40,7 @@ export class ForgotPasswordComponent {
           this.router.navigate(['/auth/reset-password'], { queryParams: { email: this.email } });
         }, 2000);
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         this.isLoading = false;
         this.isError = true;
         this.message = error.error?.message || error.error || 'Failed to send reset code. Please try again.';

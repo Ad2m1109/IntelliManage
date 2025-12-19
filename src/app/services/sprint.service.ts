@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { config } from '../config';
+import { Task } from '../models/task.model'; // Import Task
 
 export interface Sprint {
     id: number;
@@ -12,7 +13,7 @@ export interface Sprint {
     projectId: number;
     status?: string; // PLANNED, ACTIVE, COMPLETED
     progress: number;
-    tasks: any[];
+    tasks: Task[];
 }
 
 @Injectable({

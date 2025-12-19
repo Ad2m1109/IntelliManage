@@ -1,22 +1,23 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user.model'; // Import User
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule], // Add FormsModule here
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class HeaderComponent implements OnInit {
-  user: any;
+  user: User | null;
   userRole: string = '';
-  searchTerm: string = ''; // Property to hold the search input value
+  searchTerm: string = '';
 
-  @Output() searchEvent = new EventEmitter<string>(); // Event emitter for search term
+  @Output() searchEvent = new EventEmitter<string>();
 
   constructor(private authService: AuthService) {
     this.user = this.authService.getCurrentUser();
@@ -31,6 +32,6 @@ export class HeaderComponent implements OnInit {
   }
 
   onSearch() {
-    this.searchEvent.emit(this.searchTerm); // Emit the current search term
+    this.searchEvent.emit(this.searchTerm);
   }
 }

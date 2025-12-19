@@ -42,7 +42,6 @@ export class ProjectComponent implements OnInit, OnDestroy { // Implement OnDest
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load projects', err);
         this.isLoading = false;
       }
     });
@@ -66,7 +65,6 @@ export class ProjectComponent implements OnInit, OnDestroy { // Implement OnDest
     this.filteredProjects = this.allProjects.filter(project =>
       project.name.toLowerCase().includes(lowerCaseSearchTerm) ||
       project.description.toLowerCase().includes(lowerCaseSearchTerm)
-      // Add more fields to search if needed
     );
   }
 

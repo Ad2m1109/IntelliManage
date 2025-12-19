@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProjectStateService } from '../../../services/project-state.service';
 import { Project } from '../../../models/project.model';
+import { Sprint } from '../../../models/sprint.model'; // Import Sprint
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { ProjectService } from '../../../services/project.service';
 
 interface DashboardStats {
     overallProgress: number;
-    activeSprint: any;
+    activeSprint: Sprint | null;
     taskDistribution: { [key: string]: number };
     blockedTasks: number;
     overdueTasks: number;
@@ -60,7 +61,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
                 this.loading = false;
             },
             error: (err) => {
-                console.error('Error loading dashboard data', err);
+                /* Handle error */ // Consider a notification service
                 this.loading = false;
             }
         });

@@ -1,0 +1,16 @@
+<div class="dialog-overlay" *ngIf="showDialog">
+    <div class="dialog-container">
+        <div class="dialog-header" *ngIf="dialogData?.title">
+            <h2>{{ dialogData?.title }}</h2>
+            <button class="close-button" (click)="cancel()">×</button>
+        </div>
+        <div class="dialog-content">
+            <p *ngIf="dialogData?.message">{{ dialogData?.message }}</p>
+            <ng-container #dialogContent></ng-container>
+        </div>
+        <div class="dialog-actions" *ngIf="!dialogData?.component">
+            <button class="btn btn-secondary" (click)="cancel()">{{ dialogData?.cancelText || 'Cancel' }}</button>
+            <button class="btn btn-primary" (click)="confirm()">{{ dialogData?.confirmText || 'Confirm' }}</button>
+        </div>
+    </div>
+</div>

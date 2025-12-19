@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { config } from '../config';
 import { User } from '../models/user.model';
+import { JwtPayload } from '../models/jwt-payload.model'; // Import JwtPayload
+import { ApiResponse } from '../models/api-response.model'; // Import ApiResponse
 
 export interface LoginRequest {
   email: string;
@@ -36,7 +38,7 @@ export class AuthService {
     private router: Router
   ) { }
 
-  private _decodeToken(token: string): any {
+  private _decodeToken(token: string): JwtPayload | null {
     try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -130,21 +132,21 @@ export class AuthService {
   }
 
   // Email verification methods
-  verifyEmail(email: string, code: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/verify-email`, { email, code });
+  verifyEmail(email: string, code: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/verify-email`, { email, code });
   }
 
-  resendVerificationCode(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/resend-code`, { email });
+  resendVerificationCode(email: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/resend-code`, { email });
   }
 
   // Password reset methods
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  forgotPassword(email: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/forgot-password`, { email });
   }
 
-  resetPassword(email: string, code: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { email, code, newPassword });
+  resetPassword(email: string, code: string, newPassword: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/reset-password`, { email, code, newPassword });
   }
 
   // Get current user from server
