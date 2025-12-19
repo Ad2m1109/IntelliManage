@@ -113,34 +113,22 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
 
         const currentSearchTerm = this.searchService.getSearchTerm();
 
-        // If we have a sprintId filter, use getFilteredTasks even for initial load
-        if (this.filters.sprintId !== null) {
-            this.taskService.getFilteredTasks(this.selectedProjectId, this.filters).subscribe({
-                next: (data) => {
-                    this.allTasks = data;
-                    this.applyAllFilters(currentSearchTerm); // Apply search term after loading
-                    this.loading = false;
-                },
-                error: (err) => {
-                    console.error('Error loading tasks', err);
-                    this.loading = false;
-                }
-            });
-            return;
+        // Ensure assigneeId is correctly set for employee view before fetching
+        if (!this.isFounder && this.employeeView === 'mine') {
+            this.filters.assigneeId = this.authService.getCurrentUser()?.id || null;
+        } else if (!this.isFounder && this.employeeView === 'all') {
+            this.filters.assigneeId = null;
         }
+        // Founders can have assigneeId set via the filter dropdown, so we don't override it here.
 
-        const obs = this.isFounder
-            ? this.taskService.getProjectTasks(this.selectedProjectId)
-            : this.taskService.getMyTasks(this.selectedProjectId);
-
-        obs.subscribe({
+        this.taskService.getFilteredTasks(this.selectedProjectId, this.filters).subscribe({
             next: (data) => {
                 this.allTasks = data;
-                this.applyAllFilters(currentSearchTerm); // Apply search term after loading
+                this.applyAllFilters(currentSearchTerm);
                 this.loading = false;
             },
             error: (err) => {
-                /* Handle error */ // Consider a notification service
+                console.error('Error loading tasks', err);
                 this.loading = false;
             }
         });
@@ -194,18 +182,22 @@ export class ProjectTasksComponent implements OnInit, OnDestroy { // Implement O
         if (this.isFounder || !this.selectedProjectId) return;
         this.employeeView = view;
         this.loading = true;
-        const obs = view === 'mine'
-            ? this.taskService.getMyTasks(this.selectedProjectId)
-            : this.taskService.getProjectTasks(this.selectedProjectId);
 
-        obs.subscribe({
+        // Set assigneeId filter based on the view
+        if (view === 'mine') {
+            this.filters.assigneeId = this.authService.getCurrentUser()?.id || null;
+        } else {
+            this.filters.assigneeId = null;
+        }
+
+        this.taskService.getFilteredTasks(this.selectedProjectId, this.filters).subscribe({
             next: (data) => {
                 this.allTasks = data;
-                this.applyAllFilters(); // Apply search term after loading
+                this.applyAllFilters();
                 this.loading = false;
             },
             error: (err) => {
-                /* Handle error */ // Consider a notification service
+                console.error('Error loading tasks for employee view', err);
                 this.loading = false;
             }
         });

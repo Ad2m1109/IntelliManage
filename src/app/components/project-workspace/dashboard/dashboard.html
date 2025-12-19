@@ -11,40 +11,6 @@
             <p class="card-footer">Project is on track</p>
         </div>
 
-        <!-- Active Sprint -->
-        <div class="dashboard-card sprint-card">
-            <h3>Active Sprint</h3>
-            <div class="sprint-info" *ngIf="stats.activeSprint; else noSprint">
-                <h4 class="sprint-name">{{ stats.activeSprint.name }}</h4>
-                <p class="sprint-goal">{{ stats.activeSprint.goal }}</p>
-
-                <div class="active-tasks-list" *ngIf="stats.activeSprint.tasks && stats.activeSprint.tasks.length > 0">
-                    <h5>Current Tasks</h5>
-                    <div class="task-item" *ngFor="let task of stats.activeSprint.tasks">
-                        <div class="task-header">
-                            <span class="task-title">{{ task.title }}</span>
-                            <span class="task-status" [class]="task.status.toLowerCase()">{{ task.status }}</span>
-                        </div>
-                        <div class="task-meta">
-                            <span class="task-assignee" *ngIf="task.assigneeName">👤 {{ task.assigneeName }}</span>
-                            <span class="task-priority" [class]="task.priority.toLowerCase()">{{ task.priority }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sprint-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" [style.width]="stats.activeSprint.progress + '%'"></div>
-                    </div>
-                    <span>{{ stats.activeSprint.progress | number:'1.0-2' }}%</span>
-                </div>
-                <p class="sprint-deadline">Ends: {{ stats.activeSprint.endDate | date }}</p>
-            </div>
-            <ng-template #noSprint>
-                <p class="empty-state">No active sprint</p>
-            </ng-template>
-        </div>
-
         <!-- Task Distribution -->
         <div class="dashboard-card distribution-card">
             <h3>Task Distribution</h3>
@@ -63,13 +29,6 @@
         <div class="dashboard-card alerts-card">
             <h3>Project Health</h3>
             <div class="alerts-list">
-                <div class="alert-item blocked" [class.active]="stats.blockedTasks > 0">
-                    <span class="alert-icon">🚫</span>
-                    <div class="alert-content">
-                        <span class="alert-title">Blocked Tasks</span>
-                        <span class="alert-value">{{ stats.blockedTasks }}</span>
-                    </div>
-                </div>
                 <div class="alert-item overdue" [class.active]="stats.overdueTasks > 0">
                     <span class="alert-icon">⏰</span>
                     <div class="alert-content">
@@ -78,6 +37,31 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Sprints Timeline -->
+        <div class="dashboard-card timeline-card">
+            <h3>Sprints Timeline</h3>
+            <div class="timeline-container">
+                <div class="timeline-track">
+                    <div class="timeline-event"
+                         *ngFor="let sprint of stats.allSprints"
+                         [class.active-sprint]="sprint.status === 'ACTIVE'"
+                         [class.completed-sprint]="sprint.status === 'COMPLETED'"
+                         [class.planned-sprint]="sprint.status === 'PLANNED'"
+                         [style.left]="getSprintPosition(sprint)"
+                         [style.width]="getSprintWidth(sprint)"
+                         [attr.data-start]="sprint.startDate | date:'shortDate'"
+                         [attr.data-end]="sprint.endDate | date:'shortDate'">
+                        <div class="timeline-sprint-name">{{ sprint.name }}</div>
+                        <div class="timeline-sprint-dates">{{ sprint.startDate | date:'shortDate' }} - {{ sprint.endDate | date:'shortDate' }}</div>
+                    </div>
+                    <div class="current-date-indicator" [style.left]="getCurrentDatePosition()"></div>
+                </div>
+            </div>
+            <ng-template #noSprintsTimeline>
+                <p class="empty-state">No sprints to display in timeline.</p>
+            </ng-template>
         </div>
     </div>
 

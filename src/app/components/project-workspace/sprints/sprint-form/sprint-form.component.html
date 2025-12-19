@@ -19,11 +19,27 @@
       <div class="form-group">
         <label for="startDate">Start Date</label>
         <input id="startDate" type="date" formControlName="startDate" />
+        <div *ngIf="sprintForm.get('startDate')?.invalid && sprintForm.get('startDate')?.touched" class="error-message">
+          <span *ngIf="sprintForm.get('startDate')?.errors?.['required']">Start Date is required.</span>
+        </div>
       </div>
       <div class="form-group">
         <label for="endDate">End Date</label>
         <input id="endDate" type="date" formControlName="endDate" />
+        <div *ngIf="sprintForm.get('endDate')?.invalid && sprintForm.get('endDate')?.touched" class="error-message">
+          <span *ngIf="sprintForm.get('endDate')?.errors?.['required']">End Date is required.</span>
+        </div>
       </div>
+    </div>
+
+    <div *ngIf="sprintForm.errors?.['dateRange'] && (sprintForm.get('startDate')?.touched || sprintForm.get('endDate')?.touched)" class="error-message">
+      Start Date must be before End Date.
+    </div>
+    <div *ngIf="sprintForm.errors?.['projectStartDate'] && (sprintForm.get('startDate')?.touched)" class="error-message">
+      Sprint Start Date cannot be before Project Start Date.
+    </div>
+    <div *ngIf="sprintForm.errors?.['sprintOverlap'] && (sprintForm.get('startDate')?.touched || sprintForm.get('endDate')?.touched)" class="error-message">
+      Sprint dates overlap with an existing sprint.
     </div>
 
     <div class="form-actions">

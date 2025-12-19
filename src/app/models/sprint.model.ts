@@ -8,6 +8,7 @@ export interface Sprint {
     startDate?: string;
     endDate?: string;
     project?: Project;
+    status?: string; // Add status property
     progress?: number; // Added progress property
     tasks?: Task[];
 }
