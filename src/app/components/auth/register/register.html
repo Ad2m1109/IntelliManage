@@ -26,14 +26,28 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" [(ngModel)]="password" required
-                        placeholder="Enter your password" [disabled]="loading" />
+                    <div class="password-input-container">
+                        <input [type]="passwordFieldType" id="password" name="password" [(ngModel)]="password" required
+                            placeholder="Enter your password" [disabled]="loading" />
+                        <button type="button" class="toggle-password-visibility" (click)="togglePasswordVisibility()">
+                            <i class="fa"
+                                [ngClass]="{'fa-eye': passwordFieldType === 'password', 'fa-eye-slash': passwordFieldType === 'text'}"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword"
-                        required placeholder="Confirm your password" [disabled]="loading" />
+                    <div class="password-input-container">
+                        <input [type]="confirmPasswordFieldType" id="confirmPassword" name="confirmPassword"
+                            [(ngModel)]="confirmPassword" required placeholder="Confirm your password"
+                            [disabled]="loading" />
+                        <button type="button" class="toggle-password-visibility"
+                            (click)="toggleConfirmPasswordVisibility()">
+                            <i class="fa"
+                                [ngClass]="{'fa-eye': confirmPasswordFieldType === 'password', 'fa-eye-slash': confirmPasswordFieldType === 'text'}"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">

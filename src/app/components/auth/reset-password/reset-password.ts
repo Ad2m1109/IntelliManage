@@ -22,6 +22,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy { // Implement 
     isLoading: boolean = false;
     message: string = '';
     isError: boolean = false;
+    newPasswordFieldType: string = 'password'; // Added for new password visibility toggle
+    confirmPasswordFieldType: string = 'password'; // Added for confirm password visibility toggle
     private routeSub: Subscription = new Subscription(); // To manage route params subscription
 
     constructor(
@@ -38,6 +40,14 @@ export class ResetPasswordComponent implements OnInit, OnDestroy { // Implement 
 
     ngOnDestroy(): void {
         this.routeSub.unsubscribe(); // Unsubscribe from route params
+    }
+
+    toggleNewPasswordVisibility() {
+        this.newPasswordFieldType = this.newPasswordFieldType === 'password' ? 'text' : 'password';
+    }
+
+    toggleConfirmPasswordVisibility() {
+        this.confirmPasswordFieldType = this.confirmPasswordFieldType === 'password' ? 'text' : 'password';
     }
 
     onSubmit() {

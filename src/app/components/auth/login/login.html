@@ -15,8 +15,13 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" [(ngModel)]="password" name="password"
-                    placeholder="Enter your password" required />
+                <div class="password-input-container">
+                    <input [type]="passwordFieldType" id="password" [(ngModel)]="password" name="password"
+                        placeholder="Enter your password" required />
+                    <button type="button" class="toggle-password-visibility" (click)="togglePasswordVisibility()">
+                        <i class="fa" [ngClass]="{'fa-eye': passwordFieldType === 'password', 'fa-eye-slash': passwordFieldType === 'text'}"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="form-options">

@@ -24,6 +24,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   roleType: RoleType = RoleType.EMPLOYEE;
   loading: boolean = false;
   error: string = '';
+  passwordFieldType: string = 'password'; // Added for password visibility toggle
+  confirmPasswordFieldType: string = 'password'; // Added for confirm password visibility toggle
 
   // Make RoleType enum available in template
   RoleType = RoleType;
@@ -42,6 +44,14 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.initializeGoogleSignIn();
+  }
+
+  togglePasswordVisibility() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordFieldType = this.confirmPasswordFieldType === 'password' ? 'text' : 'password';
   }
 
   private initializeGoogleSignIn() {

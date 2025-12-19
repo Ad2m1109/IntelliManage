@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   password: string = '';
   loading: boolean = false;
   error: string = '';
+  passwordFieldType: string = 'password'; // Added for password visibility toggle
 
   constructor(
     private authService: AuthService,
@@ -36,6 +37,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.initializeGoogleSignIn();
+  }
+
+  togglePasswordVisibility() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }
 
   private initializeGoogleSignIn() {
